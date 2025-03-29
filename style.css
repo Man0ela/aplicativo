@@ -1,4 +1,20 @@
 h1 {
-    text-align: center;
     font-family: 'Times New Roman', Times, serif;
+}
+.mycontainer > div{
+    width: 40%;
+}
+.mycontainer{
+    display:flex;
+}
+header{
+    padding: 10px;
+}
+.button{
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    text-align: center;
+    background-color: #04AA6D;
+    padding: 12px 28px;
 }
