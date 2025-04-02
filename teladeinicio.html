@@ -8,7 +8,11 @@
 </head>
 <body> 
     <header>
-       <h1>Getservices<div class="button-right"><button class="button">Login</button><button class="button">Entrar como profissional</button></div></h1> 
+       <h1>Getservices</h1>
+       <div class="button-right">
+        <button class="button">Login</button>
+        <button class="button">Entrar como profissional</button>
+    </div>
     </header>
     <section>
     <hr>
@@ -31,10 +35,9 @@
         </div>
     </div>
     <hr>
-    <form>
-        <label for="search">Pesquise oque vc procura</label>
-        <br>
-        <input type="text" id="search" name="search">
+    <form action="/busca" method="get">
+        <input type="search" name="search" placeholder="Oque você está precisando?" required>
+        <button class="buscar" type="submit">Buscar</button>
     </form>
     </section>
 </body>
