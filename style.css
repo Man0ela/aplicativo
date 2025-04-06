@@ -3,6 +3,7 @@ h1 {
 }
 .mycontainer > div{
     width: 40%;
+    text-align: center;
 }
 .mycontainer{
     display:flex;
