@@ -54,9 +54,87 @@ input[type="search"] {
    width: 40px;
 }
 .perfils{
-    background-color: #f0fff9;
+    background-color: #c6ffe8;
+    border: 1px solid #ddd;       /* retângulo */
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 16px;           /* espaçamento entre cards */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background .2s;
+    min-height: 100px;
+    transition: all .2s;
+}
+#searchInput {
     width: 100%;
-    height: 22%;
-    display: inline-block;
-    
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+.imgperfil{
+    border-radius: 50%;
+    vertical-align: middle;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+.estrela {
+        margin: 0 2px;
+      }
+.estrela.cheia{
+    color: gold;
+}
+.estrela.vazia{
+    color: #ccc;
+}
+.avaliacao{
+    background-color: transparent;
+    font-size: 32px;
+    color: gold;
+    gap:60px;
+    display: flex;
+    align-items: center;
+    gap:12px;
+}
+.info{
+    flex: 1;
+}
+.perfilformatado{
+    display: flex;
+    justify-content: space-between; /* faz as estrelas irem para a direita*/
+    align-items: center;
+    flex: 1;
+}
+.chat-button{
+    background: #28a745;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background .2s;
+    margin-bottom: 70px;
+    margin-right: 70px;
+    margin-left: -160px;
+
+}
+.chat-button:hover {
+    background: #218838;
+  }
+.chat-button:focus{
+    outline: 2px solid #000000;
+    outline-offset: 2px; 
+}
+.button:focus{
+    outline: 2px solid #000000;
+    outline-offset: 2px;
+}
+.buscar:focus{
+    outline: 2px solid #000000;
+    outline-offset: 2px;
+}
+.perfils:hover{
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
