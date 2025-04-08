@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Profissionais Disponíveis</title>
+        
+        <style>
+            .container {
+                max-width: 800px;
+                margin: 2rem auto;
+                background: white;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            h1, h2 {
+                text-align: center;
+            }
+
+            .profissional {
+                border: 1px solid #ddd;
+                padding: 1rem;
+                border-radius: 10px;
+                margin: 1rem 0;
+                cursor: pointer;
+            }
+
+            .estrelas span {
+                font-size: 1.2rem;
+                cursor: pointer;
+                color: #ccc;
+            }
+
+            .estrelas span.checked {
+                color: GOLD;
+            }
+
+            .data-agendamento {
+                margin-top: 0.5rem;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 id="titulo"></h1>
+            <div id="lista-profissionais"></div>
+        </div>
+        
+        <script>
+            const profissionais = [
+                {id: 1, nome: "João - Piscineiro", tipo: "Piscineiro", estrela: 4.2},
+                {id: 2, nome: "Maria - Faxineira", tipo: "Faxineiro", estrelas: 4.8},
+                {id: 3, nome: "Carlos - Jardineiro", tipo: "Jardineiro", estrelas: 3.9},
+                {id: 4, nome: "Ana - Faxineira", tipo: "Faxineiro", estrelas: 4.6},
+                {id: 5, nome: "Pedro - Jardineiro", tipo: "Jardineiro", estrelas: 4.1}
+            ];
+
+            const agendados = {};
+            const avaliacoes = {};
+            const lista = document.getElementById("lista-profissionais");
+
+            const urlParametro = new URLSearchParams(window.location.search);
+            const tipo_escolhido = urlParametro.get("tipo");
+
+            document.getElementById("titulo").textContent = `Profissionais de ${tipo_escolhido}`;
+
+            const filtrados = profissionais.filter(p => p.tipo === tipo_escolhido);
+
+            //Puxar as informações dos profissionais - status: em andamento
+            filtrados.forEach(prof => {
+                const div = document.createElement("div");
+                div.className = "profissional";
+
+                const estrelas = Math.round(prof.estrelas);
+                let estrelasHTML = "";
+                for(let i = 1; i <= 5; i++){
+                    estrelasHTML += `<span class"${i <= estrelas ? 'checked' : ''}">&#9733;</span>`;
+                }
+                
+            });
+            
+            function agendar(id){
+                const dataInput = document.getElementById(`data-${id}`);
+                const dataSelecionada = dataInput.value;
+                if(dataSelecionada) {
+                    alert("Selecione uma data para o agendamento.");
+                    return;
+                }
+                
+                const data_atual = new Date();
+                data_atual.setHours(0, 0, 0, 0);
+                const data_selecionada = new Date(data_selecionada);
+
+                if(data_selecionada < data_atual){
+                    aler("Data inválida.");
+                    return;
+                }
+
+                agendados[id] = true;
+                document.getElementById(`cancelar-${id}`).disabled = false;
+                document.getElementById(`feedback-${id}`).style.display = "block";
+                alert("Agendamento realizado com sucesso com o " + profissionais[(id-1)].nome + " na data: " + data_selecionada);
+            }
+
+            function cancelar(id){
+                if(!agendados[id]) return;
+                
+                delete agendados[id];
+                document.getElementById(`cancelar-${id}`).disabled = true;
+                document.getElementById(`feedback-${id}`).style.display = "none";
+                alert("Agendamento cancelado para o profissinal ID: " + id);
+            }
+
+            function selecionarEstrelas(profId, nota) {
+                avaliacoes[profId] = nota;
+                for (let i = 1; i <= 5; i++) {
+                const estrela = document.getElementById(`estrela-${profId}-${i}`);
+                estrela.classList.toggle('selecionada', i <= nota);
+                }
+            }
+
+            function feedback(id){
+                const textarea = document.querySelector(`#feedback-${id} textarea`);
+                const texto = textarea.value.trim();
+                const nota = avaliacoes[id] || 0;
+
+                if(!texto){
+                    alert("Favor escrever uma breve avaliação.");
+                    return;
+                }
+                
+                if(note === 0){
+                    alert("Favor selecionar uma nota de 1 a 5 estrelas.")
+                    return;
+                }
+            
+                alert(`Feedback enviado! \n Comentário: ${texto} \n Nota: ${nota} estrelas(s)`);
+                textarea.value = "";
+                selecionarEstrela(id, 0);
+            }
+
+        </script>
+    </body>
+</html>
