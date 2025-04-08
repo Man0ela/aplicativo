@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">   
+    <title>Getservices</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 <body>
-    <header>
+    <header class="container-fluid row">
         <h1>Getservices</h1>
         <div class="button-right">
          <button class="button">Login</button>
@@ -15,37 +18,35 @@
         </div>
      </header> 
      <nav>
-        <form action="/busca" method="get">
-            <input type="search" onkeyup="filterProfiles()" id="searchInput" name="search" placeholder="Oque você está precisando?" required>
-           <a href="/perfil.html"><button class="buscar" type="submit">Buscar</button></a>
+        <form action="perfil.html" method="get">
+            <input type="search" onkeyup="filterProfiles()" id="searchInput" name="search"
+             placeholder="Oque você está precisando?" required>
+           <button class="buscar" type="submit">Buscar</button>
         </form>
     </nav>
      <section>
-        <div class="perfils"> 
+            <div class="perfils row"> 
+            <div class="info col">
             <img class="imgperfil" src="images/perfils.png" alt="foto de perfil">
-            <div class="perfilformatado">
-            <div class="info">
             <h3>Getulio Gonçaveis</h3>
             <p>Eletricista</p>
             </div>
-            <div class="avaliacao">
-            <span class="estrela cheia">&#9733;</span>
-            <span class="estrela cheia">&#9733;</span>
-            <span class="estrela cheia">&#9733;</span>
-            <span class="estrela cheia">&#9733;</span>
-            <span class="estrela vazia">&#9734;</span>
-            <button class="chat-button" >💬 Chat</button>
+            <div class="avaliacao col-2">
+                <span class="estrela cheia">&#9733;</span>
+                <span class="estrela cheia">&#9733;</span>
+                <span class="estrela cheia">&#9733;</span>
+                <span class="estrela cheia">&#9733;</span>
+                <span class="estrela vazia">&#9734;</span>
+                <button class="chat-button" >💬 Chat</button>
             </div>
             </div>
-            </div>
-            <div class="perfils">
+            <div class="perfils row">
+            <div class="info col">
             <img class="imgperfil" src="images/perfils.png" alt="foto de perfil">
-            <div class="perfilformatado">
-            <div class="info">
             <h3>Pedro Gonçaveis</h3>
             <p>Eletricista</p>
             </div>
-            <div class="avaliacao">
+            <div class="avaliacao col-2">
                 <span class="estrela cheia">&#9733;</span>
                 <span class="estrela cheia">&#9733;</span>
                 <span class="estrela vazia">&#9734;</span>
@@ -54,15 +55,13 @@
                 <button class="chat-button" >💬 Chat</button>
             </div> 
             </div>
-            </div>
-            <div class="perfils">
+            <div class="perfils row">
+            <div class="info col">
             <img class="imgperfil" src="images/perfils.png" alt="foto de perfil">
-            <div class="perfilformatado">
-            <div class="info">
             <h3>Ana Gonçaveis</h3>
             <p>Eletricista</p>
             </div>
-            <div class="avaliacao">
+            <div class="avaliacao col-2">
                 <span class="estrela cheia">&#9733;</span>
                 <span class="estrela cheia">&#9733;</span>
                 <span class="estrela vazia">&#9734;</span>
@@ -71,15 +70,13 @@
                 <button class="chat-button" >💬 Chat</button>
             </div>
             </div>
-            </div>
-            <div class="perfils">
+            <div class="perfils row">
+            <div class="info col">
             <img class="imgperfil" src="images/perfils.png" alt="foto de perfil">
-            <div class="perfilformatado">
-            <div class="info">
             <h3>Leticia Gonçaveis</h3>
             <p>Eletricista</p>
             </div>
-            <div class="avaliacao">
+            <div class="avaliacao col-2">
                 <span class="estrela cheia">&#9733;</span>
                 <span class="estrela cheia">&#9733;</span>
                 <span class="estrela vazia">&#9734;</span>
@@ -87,16 +84,14 @@
                 <span class="estrela vazia">&#9734;</span>
                 <button class="chat-button" >💬 Chat</button>
             </div>
-            </div>
             </div> 
-        <div class="perfils">
-            <img class="imgperfil" src="images/perfils.png" alt="foto de perfil">
-            <div class="perfilformatado">
-            <div class="info">
+        <div class="perfils row">
+            <div class="info col">
+            <img class="imgperfil" src="images/perfils.png" alt="foto de perfil"></button>
             <h3>Fernando Silva</h3>
             <p>Eletricista</p>
         </div>
-        <div class="avaliacao">
+        <div class="avaliacao col-2">
             <span class="estrela cheia">&#9733;</span>
             <span class="estrela cheia">&#9733;</span>
             <span class="estrela cheia">&#9733;</span>
@@ -106,7 +101,9 @@
         </div>
         </div>
      </section>
-     <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
-     <script src="script.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
 </body>
 </html>

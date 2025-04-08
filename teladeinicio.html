@@ -5,58 +5,52 @@
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">   
     <title>Getservices</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
-    <body> 
-        <header>
-        <h1>Getservices</h1>
-        <div class="button-right">
-            <button class="button">Login</button>
-            <button class="button">Entrar como profissional</button>
+<body> 
+    <header>
+       <h1>Getservices</h1>
+       <div class="button-right">
+        <button class="button">Login</button>
+        <button class="button">Entrar como profissional</button>
+       </div>
+    </header>
+    <section>
+    <hr>
+    <div class="mycontainer">
+        <div>
+            <p>Mecanico</p>
         </div>
-        </header>
-        <section>
-        <hr>
-        <div class="mycontainer">
-            <div>
-                <p>Mecanico</p>
-            </div>
-            <div>
-                <p>Limpeza de piscina</p>
-            </div>
-            <div>
-            <!-- <img src="images/engrenagens.jpeg" alt="Eletrodomesticos">-->
-                <p>Concerto de Eletrodomesticos</p>
-            </div>
-            <div>
-                <p>Serviços domesticos</p>
-            </div>
-            <div>
-                <p>Eventos</p>
-            </div>
-            <div>
-                <p>Montagem de imovéis</p>
-            </div>
-            <div>
-                <p>Pintor</p>
-            </div>
+        <div>
+            <p>Limpeza de piscina</p>
         </div>
-        <hr>
-        <nav>
-        <form action="solicitarpedido.html" method="get">
-            <input type="search" id="tipo-servico" name="search" placeholder="Oque você está precisando?" required>
-            <button class="buscar" onclick="buscarProfissionais()">Buscar</button>
-        </form>
-        </nav>
-        <img class="imgtelainical" src="images/prestador-de-servicos.png">
-        </section>
-        
-        <script>
-            function buscarProfissionais(){
-                const tipo = document.getElementById('tipo-servico').value;
-                window.location.href = `pesquisa_filtrada.html?tipo=${encodeURIComponent(tipo)}`;
-            }
-        </script>
-
-    </body>
+        <div>
+           <!-- <img src="images/engrenagens.jpeg" alt="Eletrodomesticos">-->
+             <p>Concerto de Eletrodomesticos</p>
+        </div>
+        <div>
+            <p>Serviços domesticos</p>
+        </div>
+        <div>
+            <p>Eventos</p>
+        </div>
+        <div>
+            <p>Montagem de imovéis</p>
+        </div>
+        <div>
+            <p>Pintor</p>
+        </div>
+    </div>
+    <hr>
+    <nav>
+    <form action="solicitarpedido.html" method="get">
+        <input type="search" name="search" placeholder="Oque você está precisando?" required>
+        <button class="buscar" type="submit">Buscar</button>
+    </form>
+    </nav>
+    <img class="imgtelainical" src="images/prestador-de-servicos.png">
+    </section>
+</body>
 </html>

@@ -1,6 +1,9 @@
 h1 {
     font-family: 'Times New Roman', Times, serif;
 }
+header{
+    box-sizing: unset;
+}
 .mycontainer > div{
     width: 40%;
     text-align: center;
@@ -59,11 +62,13 @@ input[type="search"] {
     border: 1px solid #ddd;       /* retângulo */
     border-radius: 6px;
     padding: 20px;
-    margin-bottom: 16px;           /* espaçamento entre cards */
+    margin-bottom: 16px;           
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: background .2s;
     min-height: 100px;
-    transition: all .2s;
+    display: flex;
+    justify-content: space-between; /* faz as estrelas irem para a direita*/
+    align-items: center;
+    flex: 1;
 }
 #searchInput {
     width: 100%;
@@ -93,18 +98,13 @@ input[type="search"] {
     background-color: transparent;
     font-size: 32px;
     color: gold;
-    gap:60px;
     display: flex;
     align-items: center;
     gap:12px;
+    box-sizing: content-box;
+    flex-wrap: nowrap;
 }
 .info{
-    flex: 1;
-}
-.perfilformatado{
-    display: flex;
-    justify-content: space-between; /* faz as estrelas irem para a direita*/
-    align-items: center;
     flex: 1;
 }
 .chat-button{
@@ -138,4 +138,7 @@ input[type="search"] {
 }
 .perfils:hover{
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.Usuario{
+    background-color: #c6ffe8;
 }
