@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalhes do Prestador de Serviço</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .detalhes {
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 1rem;
+      background-color: #f8f8f8;
+    }
+    .botoes {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .agendar { background-color: #28a745; color: white; }
+    .cancelar { background-color: #dc3545; color: white; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Detalhes do Prestador de Serviço</h1>
+  <div id="detalhes-profissional"></div>
+</div>
+
+<script>
+  const profissionais = [
+    { id: 1, nome: "João - Piscineiro", tipo: "Piscineiro", estrelas: 4.2, descricao: "Profissional experiente em limpeza e manutenção de piscinas.", certificacoes: ["Certificado de Limpeza de Piscinas", "Curso de Manutenção de Equipamentos Aquáticos"], preco: "R$ 150,00", distancia: "15 km" },
+    { id: 2, nome: "Maria - Faxineira", tipo: "Faxineira", estrelas: 4.8, descricao: "Faxineira com vasta experiência em limpeza doméstica e comercial.", certificacoes: ["Certificado de Limpeza Profissional", "Curso de Limpeza e Higienização de Ambientes"], preco: "R$ 80,00", distancia: "20 km" },
+    { id: 3, nome: "Carlos - Jardineiro", tipo: "Jardineiro", estrelas: 3.9, descricao: "Jardineiro especializado em cuidados de plantas e manutenção de jardins.", certificacoes: ["Certificado em Jardinagem e Paisagismo", "Curso de Manutenção de Jardins e Flores"], preco: "R$ 100,00", distancia: "10 km" },
+    { id: 4, nome: "Ana - Faxineira", tipo: "Faxineira", estrelas: 4.6, descricao: "Faxineira com 5 anos de experiência no mercado.", certificacoes: ["Certificado de Limpeza Doméstica", "Curso de Cuidados com Ambientes Comerciais"], preco: "R$ 90,00", distancia: "30 km" },
+    { id: 5, nome: "Pedro - Jardineiro", tipo: "Jardineiro", estrelas: 4.1, descricao: "Jardineiro dedicado, com um olhar apurado para jardinagem e paisagismo.", certificacoes: ["Certificado em Paisagismo", "Curso Avançado de Jardinagem"], preco: "R$ 120,00", distancia: "8 km" }
+  ];
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const idProfissional = parseInt(urlParams.get("id"));
+
+  const profissional = profissionais.find(p => p.id === idProfissional);
+
+  const detalhesDiv = document.getElementById("detalhes-profissional");
+
+  if (profissional) {
+    const estrelas = Math.round(profissional.estrelas);
+    let estrelasHTML = "";
+    for (let i = 1; i <= 5; i++) {
+      estrelasHTML += `<span class="${i <= estrelas ? 'checked' : ''}">&#9733;</span>`;
+    }
+
+    detalhesDiv.innerHTML = `
+      <div class="detalhes">
+        <h2>${profissional.nome}</h2>
+        <div class="estrelas">${estrelasHTML}</div>
+        <p><strong>Descrição:</strong> ${profissional.descricao}</p>
+        <p><strong>Certificações:</strong></p>
+        <ul>
+          ${profissional.certificacoes.map(cert => `<li>${cert}</li>`).join('')}
+        </ul>
+        <p><strong>Preço por Serviço:</strong> ${profissional.preco}</p>
+        <p><strong>Distância Máxima de Atendimento:</strong> ${profissional.distancia}</p>
+        <div class="botoes">
+          <button class="agendar" onclick="agendar(${profissional.id})">Agendar Serviço</button>
+        </div>
+      </div>
+    `;
+  } else {
+    detalhesDiv.innerHTML = "<p>Profissional não encontrado.</p>";
+  }
+
+  function agendar(id) {
+    alert(`Você agendou o serviço do profissional ID: ${id}`);
+  }
+</script>
+</body>
+</html>

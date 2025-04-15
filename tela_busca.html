@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscar Serviços</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 5rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    select, button {
+      padding: 0.75rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Buscar Profissionais Terceirizados</h1>
+    <label for="tipo-servico">Selecione o tipo de serviço:</label><br>
+    <select id="tipo-servico">
+      <option value="Piscineiro">Piscineiro</option>
+      <option value="Faxineira">Faxineira</option>
+      <option value="Jardineiro">Jardineiro</option>
+    </select>
+    <br>
+    <button onclick="buscarProfissionais()">Buscar</button>
+  </div>
+
+  <script>
+    function buscarProfissionais() {
+      const tipo = document.getElementById('tipo-servico').value;
+      window.location.href = `profs_filtrados.html?tipo=${encodeURIComponent(tipo)}`;
+    }
+  </script>
+</body>
+</html>
