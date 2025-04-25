@@ -1,7 +1,4 @@
-function buscarProfissionais() {
-    const tipo = document.getElementById('tipo-servico').value;
-    window.location.href = `profs_filtrados.html?tipo=${encodeURIComponent(tipo)}`;
-  }
+/* js de profs_filtrados*/
     const profissionais = [
     { id: 1, nome: "João - Piscineiro", tipo: "Piscineiro", estrelas: 4.2 },
     { id: 2, nome: "Maria - Faxineira", tipo: "Faxineira", estrelas: 4.8 },
@@ -111,4 +108,4 @@ function buscarProfissionais() {
     textarea.value = "";
     selecionarEstrela(id, 0);
   }
-  
+/* fim do js de profs_filtrados*/

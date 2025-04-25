@@ -1,10 +1,4 @@
-  .body_tela_busca {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f5;
-    margin: 0;
-    padding: 0;
-  }
-  .body_profs_filtrados{
+   body{
     font-family: Arial, sans-serif;
     background: #f0f0f5;
     margin: 0;
@@ -91,3 +85,16 @@
     margin-top: 0.5rem;
   }
   /*acabo prof filtrados*/
+  /*css do info_prof*/
+  .detalhes {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+    background-color: #f8f8f8;
+  }
+  /* virou comentario */
+  .botoes1 {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
