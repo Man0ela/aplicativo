@@ -25,24 +25,17 @@
         <li class="nav-item"><a href="#" class="nav-link">Entre como profissional</a></li>
       </ul>
     </header>
-    <div class="container2">
-      <h1>Buscar Profissionais Terceirizados</h1>
-      <label for="barra-pesquisa">Digite o tipo de serviço:</label><br>
-      <input 
-        type="text" 
-        id="barra-pesquisa" 
-        class="form-control" 
-        list="sugestoes-servico" 
-        placeholder="Ex: Piscineiro, Faxineira, Jardineiro"
-      >
-      <datalist id="sugestoes-servico">
-        <option value="Piscineiro">
-        <option value="Faxineira">
-        <option value="Jardineiro">
-      </datalist>
-      <br>
-      <button style="margin-top: 16px;" onclick="buscarProfissionais()">Buscar</button>
-    </div>
+  <div class="container2">
+    <h1>Buscar Profissionais Terceirizados</h1>
+    <label for="tipo-servico">Selecione o tipo de serviço:</label><br>
+    <select class="botao_opçao" id="tipo-servico">
+      <option value="Piscineiro">Piscineiro</option>
+      <option value="Faxineira">Faxineira</option>
+      <option value="Jardineiro">Jardineiro</option>
+    </select>
+    <br>
+    <button style=" margin-top: 16px;"onclick="buscarProfissionais()">Buscar</button>
+  </div>
    <script src="script_tela_busca.js"></script>
    <script 
    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" 
