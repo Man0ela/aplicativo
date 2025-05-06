@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Serviços Contratados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+
+      .card:hover {
+        transform: scale(1.02);
+      }
+
+      .card-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+      }
+
+      .card-title {
+        margin-bottom: 0.25rem;
+      }
+
+      .avaliacao {
+        color: #ffc107;
+      }
+
+      .data-servico {
+        font-size: 0.9rem;
+        color: #6c757d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <h1 class="mb-4 text-center">Meus Serviços Contratados</h1>
+
+      <div id="lista-servicos" class="row g-4">
+        <!-- Os cards serão inseridos aqui via JavaScript -->
+      </div>
+    </div>
+
+    <script>
+      const servicosContratados = [
+        {
+          nome: "João - Piscineiro",
+          tipo: "Piscineiro",
+          estrelas: 4.2,
+          data: "10/04/2025",
+        },
+        {
+          nome: "Maria - Faxineira",
+          tipo: "Faxineira",
+          estrelas: 4.8,
+          data: "15/04/2025",
+        },
+        {
+          nome: "Carlos - Jardineiro",
+          tipo: "Jardineiro",
+          estrelas: 3.9,
+          data: "01/05/2025",
+        },
+      ];
+
+      const icones = {
+        Piscineiro: "bi-water",
+        Faxineira: "bi-house-door",
+        Jardineiro: "bi-flower1",
+      };
+
+      const container = document.getElementById("lista-servicos");
+
+      servicosContratados.forEach((servico) => {
+        const icone = icones[servico.tipo] || "bi-person";
+
+        const col = document.createElement("div");
+        col.className = "col-md-4";
+
+        col.innerHTML = `
+        <div class="card p-3">
+          <div class="d-flex align-items-center mb-3">
+            <i class="bi ${icone} card-icon me-3"></i>
+            <div>
+              <h5 class="card-title">${servico.nome}</h5>
+              <small class="text-muted">${servico.tipo}</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mb-2">
+            <span class="me-2">Avaliação:</span>
+            <span class="avaliacao">${"★".repeat(
+              Math.round(servico.estrelas)
+            )}</span>
+            <span class="ms-2 text-muted">(${servico.estrelas.toFixed(
+              1
+            )})</span>
+          </div>
+          <div class="data-servico mt-2">
+            <i class="bi bi-calendar-event me-2"></i>
+            Realizado em: ${servico.data}
+          </div>
+        </div>
+      `;
+
+        container.appendChild(col);
+      });
+    </script>
+  </body>
+</html>
