@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./style1.css"; // Garanta que esse arquivo exista e esteja estilizando como seu HTML original
+import styles from "./css/style1.module.css";// Garanta que esse arquivo exista e esteja estilizando como seu HTML original
 
 const profissionais = [
   {

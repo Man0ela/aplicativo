@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom"; // Importando Link para redirecionar
 import { useSearchParams } from "react-router-dom";
-import "./style1.css";
+import styles from "./css/style1.module.css";
 
 const profissionais = [
   {

@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import '../style.css'
+import styles from "./css/style1.module.css";
 
 function TelaInicial() {
   const navigate = useNavigate();
@@ -19,9 +19,8 @@ function TelaInicial() {
         </a>
         <ul className="nav nav-pills">
           <li className="nav-item">
-            <a href="#" className="nav-link active">
-              Login
-            </a>
+            <button onClick= {() => navigate("/login")} className="nav-link active">
+              Login</button>
           </li>
           <li className="nav-item">
             <a href="#" className="nav-link">
