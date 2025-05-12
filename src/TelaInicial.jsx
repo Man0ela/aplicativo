@@ -1,18 +1,17 @@
 import React from "react";
+import cx from 'classnames';
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./css/style1.module.css";
+import styles from "./css/style3.module.css";
 
 function TelaInicial() {
   const navigate = useNavigate();
-  const urlIMG =
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTqQ8005JKs5fpNf1g0v6AfL8p1n38q5tGg4xMb2CYRs-KIZ4Je";
+  const IMG ="./images/prestador-de-servicos.png";
 
   return (
     <>
-      <header className="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+      <header className={cx("d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom")}>
         <a
-          href="/"
           className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
         >
           <span className="fs-4">Getservices</span>
@@ -33,17 +32,21 @@ function TelaInicial() {
             </a>
           </li>
         </ul>
+         <a href="/servicos-contratados" className="text-decoration-none">
+          <i className="bi bi-person-circle fs-3"></i>
+        </a>
       </header>
 
       <div className="container col-xxl-8 px-4 py-5">
         <div className="row flex-lg-row-reverse align-items-center g-5 py-5">
           <div className="col-10 col-sm-8 col-lg-6">
             <img
-              src={urlIMG}
+              src={IMG}
               className="d-block mx-lg-auto img-fluid"
               alt="Prestador de Serviços"
               width="700"
               height="500"
+              loading="lazy"
             />
           </div>
           <div className="col-lg-6">

@@ -1,4 +1,5 @@
 import React from "react";
+import cx from 'classnames';
 import { useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./css/style1.module.css";// Garanta que esse arquivo exista e esteja estilizando como seu HTML original

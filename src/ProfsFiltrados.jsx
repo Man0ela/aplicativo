@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import cx from 'classnames';
 import { Link } from "react-router-dom"; // Importando Link para redirecionar
 import { useSearchParams } from "react-router-dom";
 import styles from "./css/style1.module.css";

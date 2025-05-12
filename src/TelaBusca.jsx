@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import cx from 'classnames';
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./css/style1.module.css";
+import styles from "./css/style3.module.css";
 
 function TelaBusca() {
   const [tipoServico, setTipoServico] = useState("");
@@ -14,9 +15,8 @@ function TelaBusca() {
 
   return (
     <>
-      <header  className="{styles.header}d-flex flex-wrap justify-content-between align-items-center py-3 mb-4 border-bottom px-4">
+      <header className={cx("d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom")}>
         <a
-          href="/"
           className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
         >
           <span className="fs-4">Getservices</span>
@@ -43,7 +43,7 @@ function TelaBusca() {
         </a>
       </header>
 
-      <div className="container2 text-center">
+      <div className={cx(styles.container2)}>
         <h1>Buscar Profissionais Terceirizados</h1>
         <label htmlFor="barra-pesquisa">Digite o tipo de serviço:</label>
         <br />
