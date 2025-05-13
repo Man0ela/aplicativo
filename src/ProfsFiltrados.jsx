@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import cx from 'classnames';
 import { Link } from "react-router-dom"; // Importando Link para redirecionar
 import { useSearchParams } from "react-router-dom";
-import styles from "./css/style1.module.css";
+import styles from "./css/style3.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const profissionais = [
   {
@@ -41,7 +42,6 @@ const profissionais = [
     descricao: "Pedro é especialista em jardinagem e paisagismo.",
   },
 ];
-
 export default function ProfsFiltrados() {
   const [searchParams] = useSearchParams();
   const tipoSelecionado = searchParams.get("tipo");
@@ -50,6 +50,9 @@ export default function ProfsFiltrados() {
   const [feedbacksVisiveis, setFeedbacksVisiveis] = useState({});
 
   const filtrados = profissionais.filter((p) => p.tipo === tipoSelecionado);
+  
+
+  
 
   // Função para garantir que a data não seja anterior à data de hoje
   const getDataMinima = () => {
@@ -101,7 +104,34 @@ export default function ProfsFiltrados() {
   };
 
   return (
-    <div className="container2">
+    <>
+    <header className={cx("d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom")}>
+            <a
+              className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
+            >
+              <span className="fs-4">Getservices</span>
+            </a>
+            <ul className="nav nav-pills">
+              <li className="nav-item">
+                <button onClick= {() => navigate("/login")} className="nav-link active">
+                  Login</button>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  Segurança
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  Entrar como profissional
+                </a>
+              </li>
+            </ul>
+             <a href="/servicos-contratados" className="text-decoration-none">
+              <i className="bi bi-person-circle fs-3"></i>
+            </a>
+          </header>
+    <div className={cx(styles.container2)}>
       <h1 id="titulo">Profissionais de {tipoSelecionado}</h1>
       {filtrados.map((prof) => (
         <div key={prof.id} className="profissional">
@@ -112,16 +142,20 @@ export default function ProfsFiltrados() {
             </Link>
           </h2>
 
-          <div className="estrelas">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <span
-                key={i}
-                className={i <= Math.round(prof.estrelas) ? "checked" : ""}
-              >
-                &#9733;
-              </span>
-            ))}
-          </div>
+          <div className={cx(styles.avaliacaoEstrelas, styles.estrelas)}>
+          {[1, 2, 3, 4, 5].map((i) => (
+            <span
+              key={i}
+              className={cx({
+                [styles.selecionada]: i <= Math.round(prof.estrelas),
+                [styles.estrela]: true
+              })}
+              onClick={() => selecionarEstrela(i)} // Adicione esta função para manipular o clique
+            >
+              &#9733;
+            </span>
+          ))}
+        </div>
 
           {/* Seção de agendamento */}
           <div className="data-agendamento">
@@ -136,7 +170,7 @@ export default function ProfsFiltrados() {
           </div>
           <div className="botoes">
             <button
-              className="agendar"
+              className={cx(styles.agendar)}
               onClick={() => {
                 const data = document.getElementById(`data-${prof.id}`).value;
                 agendar(prof.id, data);
@@ -145,7 +179,7 @@ export default function ProfsFiltrados() {
               Agendar
             </button>
             <button
-              className="cancelar"
+              className={cx(styles.cancelar)}
               disabled={!agendados[prof.id]}
               onClick={() => cancelar(prof.id)}
             >
@@ -189,5 +223,6 @@ export default function ProfsFiltrados() {
         </div>
       ))}
     </div>
+    </>
   );
 }
