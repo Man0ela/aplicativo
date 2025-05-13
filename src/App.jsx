@@ -1,20 +1,23 @@
 import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from 'react-router-dom';
 import TelaInicial from "./TelaInicial";
 import TelaBusca from "./TelaBusca";
 import ProfsFiltrados from "./ProfsFiltrados";
 import ProfissionalDetalhes from "./ProfissionalDetalhes";
-import Header from "@/components/Header";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Header from './Header';
+
 
 function App() {
   return (
+    <>
+       {/* ... <Header/> ... */}
     <Routes>
       <Route path="/" element={<TelaInicial />} />
       <Route path="/buscar" element={<TelaBusca />} />
       <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
       <Route path="/profissional/:id" element={<ProfissionalDetalhes />} />
-       <Header />
-    </Routes>
-    
+    </Routes></>
   );
 }
 

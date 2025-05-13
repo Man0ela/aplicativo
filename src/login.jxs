@@ -1,0 +1,88 @@
+import React from 'react';
+import './css/module.login.css'; 
+
+const [email, setEmail] = React.useState('');
+const [password, setPassword] = React.useState('');
+
+const Login = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  return (
+    <div className="bg-light" style={{ minHeight: '100vh' }}>
+      <header className="d-flex flex-wrap justify-content-between py-3 mb-4 border-bottom">
+        <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+          <svg className="bi me-2" width="40" height="32" aria-hidden="true">
+            {/* Adicione o SVG completo ou importe um ícone */}
+            <path fill="currentColor" d="M..."/>
+          </svg>
+          <span className="fs-4">Getservices</span>
+        </a>
+        <ul className="nav nav-pills">
+          <li className="nav-item">
+            <a href="#" className="nav-link active" aria-current="page">Login</a>
+          </li>
+          <li className="nav-item">
+            <a href="#" className="nav-link">Segurança</a>
+          </li>
+          <li className="nav-item">
+            <a href="#" className="nav-link">Entrar como profissional</a>
+          </li>
+        </ul>
+      </header>
+
+      <div className="d-flex justify-content-center align-items-center py-5 px-3" style={{ minHeight: 'calc(100vh - 80px)' }}>
+        <main className="form-signin mx-auto bg-white p-4 rounded shadow" style={{ maxWidth: '360px' }}>
+          <form onSubmit={handleSubmit}>
+            <h1 className="h3 mb-3 fw-normal text-center">Login</h1>
+
+            <div className="form-floating mb-3">
+              <input 
+                type="email" 
+                className="form-control" 
+                id="floatingInput" 
+                placeholder="name@example.com"
+              />
+              <label htmlFor="floatingInput">Email</label>
+            </div>
+            
+            <div className="form-floating mb-3">
+              <input 
+                type="password" 
+                className="form-control" 
+                id="floatingPassword" 
+                placeholder="Password"
+              />
+              <label htmlFor="floatingPassword">Senha</label>
+            </div>
+
+            <div className="form-check text-start mb-3">
+              <input 
+                className="form-check-input" 
+                type="checkbox" 
+                id="checkDefault"
+              />
+              <label className="form-check-label" htmlFor="checkDefault">
+                Não perguntar mais
+              </label>
+            </div>
+
+            <button type="submit" className="btn btn-primary w-100 py-2 mb-2">
+              Login
+            </button>
+            <button type="button" className="btn btn-secondary w-100 py-2">
+              Não se cadastrou?
+            </button>
+
+            <p className="mt-4 mb-0 text-body-secondary text-center">
+              &copy; 2017–2025
+            </p>
+          </form>
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

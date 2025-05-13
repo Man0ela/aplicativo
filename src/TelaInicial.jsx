@@ -10,33 +10,6 @@ function TelaInicial() {
 
   return (
     <>
-      <header className={cx("d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom")}>
-        <a
-          className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
-        >
-          <span className="fs-4">Getservices</span>
-        </a>
-        <ul className="nav nav-pills">
-          <li className="nav-item">
-            <button onClick= {() => navigate("/login")} className="nav-link active">
-              Login</button>
-          </li>
-          <li className="nav-item">
-            <a href="#" className="nav-link">
-              Segurança
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#" className="nav-link">
-              Entrar como profissional
-            </a>
-          </li>
-        </ul>
-         <a href="/servicos-contratados" className="text-decoration-none">
-          <i className="bi bi-person-circle fs-3"></i>
-        </a>
-      </header>
-
       <div className="container col-xxl-8 px-4 py-5">
         <div className="row flex-lg-row-reverse align-items-center g-5 py-5">
           <div className="col-10 col-sm-8 col-lg-6">
