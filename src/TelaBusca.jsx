@@ -15,34 +15,6 @@ function TelaBusca() {
 
   return (
     <>
-      <header className={cx("d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom")}>
-        <a
-          className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
-        >
-          <span className="fs-4">Getservices</span>
-        </a>
-        <ul className="nav nav-pills me-3">
-          <li className="nav-item">
-            <a href="#" className="nav-link active">
-              Login
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#" className="nav-link">
-              Segurança
-            </a>
-          </li>
-          <li className="nav-item">
-            <a href="#" className="nav-link">
-              Entre como profissional
-            </a>
-          </li>
-        </ul>
-        <a href="/servicos-contratados" className="text-decoration-none">
-          <i className="bi bi-person-circle fs-3"></i>
-        </a>
-      </header>
-
       <div className={cx(styles.container2)}>
         <h1>Buscar Profissionais Terceirizados</h1>
         <label htmlFor="barra-pesquisa">Digite o tipo de serviço:</label>

@@ -21,8 +21,26 @@ const Header = () => {
             {/* Código do SVG */}
           </svg>
           <span>React</span>
-        </Link>
-      </h1>
+        </Link></h1>
+        <ul className="nav nav-pills">
+              <li className="nav-item">
+                <button onClick= {() => navigate("/login")} className="nav-link active">
+                  Login</button>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  Segurança
+                </a>
+              </li>
+              <li className="nav-item">
+                <a href="#" className="nav-link">
+                  Entrar como profissional
+                </a>
+              </li>
+            </ul>
+             <a href="/servicos-contratados" className="text-decoration-none">
+              <i className="bi bi-person-circle fs-3"></i>
+            </a>
       <a
         href="https://github.com/twbs/examples/tree/main/react-nextjs/"
         target="_blank"
