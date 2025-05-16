@@ -20,7 +20,7 @@ const Header = () => {
           >
             {/* Código do SVG */}
           </svg>
-          <span>React</span>
+          <span>Getservice</span>
         </Link></h1>
         <ul className="nav nav-pills">
               <li className="nav-item">
@@ -38,9 +38,9 @@ const Header = () => {
                 </a>
               </li>
             </ul>
-             <a href="/servicos-contratados" className="text-decoration-none">
+             <Link to="/servicos-contratados" className="text-decoration-none">
               <i className="bi bi-person-circle fs-3"></i>
-            </a>
+            </Link>
       <a
         href="https://github.com/twbs/examples/tree/main/react-nextjs/"
         target="_blank"

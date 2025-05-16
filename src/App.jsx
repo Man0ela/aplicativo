@@ -7,18 +7,20 @@ import ProfissionalDetalhes from "./ProfissionalDetalhes";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './Header';
 import Footer from "./Footer";
+import ServicosContratados from "./ServicosContratados";
 
 
 function App() {
   return (
     <>
     <Header/>
-    
+
     <Routes>
       <Route path="/" element={<TelaInicial />} />
       <Route path="/buscar" element={<TelaBusca />} />
       <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
       <Route path="/profissional/:id" element={<ProfissionalDetalhes />} />
+      <Route path="/servicos-contratados" element={<ServicosContratados/>} />
     </Routes>
     <Footer/></>
   );

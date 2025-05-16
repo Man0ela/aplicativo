@@ -99,7 +99,7 @@ function ProfissionalDetalhes() {
                 ))}
               </li>
             </ul>
-            <a href="/servicos-contratados" className="btn btn-success w-100">
+            <a href="ServicosContratados" className="btn btn-success w-100">
               Agendar Serviço
             </a>
           </div>
