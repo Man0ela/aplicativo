@@ -29,7 +29,6 @@ const Header = () => {
         <ul className="nav nav-pills ms-auto justify-content-between align-items-center">
           <li className="nav-item">
             <button
-              onClick={() => navigate('/login')}
               className="nav-link active"
             >
               Login
