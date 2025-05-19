@@ -1,53 +1,62 @@
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Importe o CSS aqui também
+import { Link, useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
-    <header className="d-flex justify-content-between align-items-md-center pb-3 mb-5 border-bottom">
-      <h1 className="h4">
+    <header className="container-fluid mb-3">
+      <div className="d-flex flex-wrap align-items-center justify-content-between py-3">
+        {/* Logo e título */}
         <Link
           to="/"
           className="d-flex align-items-center text-dark text-decoration-none"
         >
-          {/* SVG permanece igual */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
             height="32"
             fill="currentColor"
-            className="bi bi-bootstrap-fill d-inline-block me-2"
+            className="bi bi-bootstrap-fill me-2"
             viewBox="0 0 16 16"
           >
-            {/* Código do SVG */}
+            {/* paths aqui */}
           </svg>
-          <span>Getservice</span>
-        </Link></h1>
-        <ul className="nav nav-pills">
-              <li className="nav-item">
-                <button onClick= {() => navigate("/login")} className="nav-link active">
-                  Login</button>
-              </li>
-              <li className="nav-item">
-                <a href="#" className="nav-link">
-                  Segurança
-                </a>
-              </li>
-              <li className="nav-item">
-                <a href="#" className="nav-link">
-                  Entrar como profissional
-                </a>
-              </li>
-            </ul>
-             <Link to="/servicos-contratados" className="text-decoration-none">
-              <i className="bi bi-person-circle fs-3"></i>
+          <span className="fs-4">Getservice</span>
+        </Link>
+
+        {/* Navegação principal */}
+        <ul className="nav nav-pills ms-auto justify-content-between align-items-center">
+          <li className="nav-item">
+            <button
+              onClick={() => navigate('/login')}
+              className="nav-link active"
+            >
+              Login
+            </button>
+          </li>
+          <li className="nav-item">
+            <Link to="#" className="nav-link">
+              Segurança
             </Link>
-      <a
-        href="https://github.com/twbs/examples/tree/main/react-nextjs/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        View on GitHub
-      </a>
+          </li>
+          <li className="nav-item">
+            <Link to="#" className="nav-link">
+              Profissional
+            </Link>
+          </li>
+        </ul>
+
+        {/* Ações à direita */}
+        <div className="d-flex align-items-center">
+          <Link
+            to="/servicos-contratados"
+            className="text-dark text-decoration-none me-3"
+          >
+            <i className="bi bi-person-circle fs-3"></i>
+          </Link>
+        </div>
+      </div>
     </header>
   );
 };
