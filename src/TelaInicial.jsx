@@ -1,15 +1,14 @@
 import React from "react";
-import cx from 'classnames';
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./css/style3.module.css";
+import styles from "./css/style3.module.css"; // se tiver estilos personalizados
 
 function TelaInicial() {
   const navigate = useNavigate();
-  const IMG ="./images/prestador-de-servicos.png";
+  const IMG = "./images/prestador-de-servicos.png";
 
   return (
-    <>
+    <div className="page-container">
       <div className="container col-xxl-8 px-4 py-5">
         <div className="row flex-lg-row-reverse align-items-center g-5 py-5">
           <div className="col-10 col-sm-8 col-lg-6">
@@ -37,14 +36,17 @@ function TelaInicial() {
               >
                 Quero um profissional
               </button>
-              <button className="btn btn-outline-secondary btn-lg px-4">
+              <button
+                className="btn btn-outline-secondary btn-lg px-4"
+                onClick={() => navigate("/sobre-nos")}
+              >
                 Saiba mais
               </button>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
