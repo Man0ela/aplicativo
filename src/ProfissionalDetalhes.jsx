@@ -150,7 +150,7 @@ function ProfissionalDetalhes() {
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             />
-            <button className="btn btn-primary" onClick={handleConfirmar}>Confirmar Agendamento</button>
+            <button className="btn btn-success" onClick={handleConfirmar}>Confirmar Agendamento</button>
           </div>
         ) : (
           <div>
@@ -181,7 +181,7 @@ function ProfissionalDetalhes() {
             </span>
           ))}
         </div>
-        <button className="btn btn-success" onClick={handleEnviarAvaliacao}>Enviar Feedback</button>
+        <button className="btn btn-primary" onClick={handleEnviarAvaliacao}>Enviar Feedback</button>
       </div>
 
       <div className="mt-3">
