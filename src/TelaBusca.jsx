@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import cx from 'classnames';
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { setTipoServico } from './features/buscaSlice.jsx'; // Ajuste o caminho
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./css/style3.module.css";
 
 function TelaBusca() {
-  const [tipoServico, setTipoServico] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // Acessa o estado do Redux
+  const tipoServico = useSelector((state) => state.busca.tipoServico);
+
+  const handleChange = (e) => {
+    dispatch(setTipoServico(e.target.value)); // Atualiza o estado global
+  };
 
   const buscarProfissionais = () => {
     if (tipoServico.trim() === "") return alert("Digite o tipo de serviço.");
@@ -35,7 +44,7 @@ function TelaBusca() {
             placeholder="Ex: Piscineiro, Faxineira, Jardineiro"
             list="sugestoes-servico"
             value={tipoServico}
-            onChange={(e) => setTipoServico(e.target.value)}
+            onChange={handleChange} // Usa a função que atualiza o Redux
             style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
           />
         </div>
