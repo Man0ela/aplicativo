@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    lista: [
+  lista: [
     {
       id: 1,
       nome: 'João Silva',
@@ -20,25 +20,52 @@ const initialState = {
       preco: 200,
       distanciaMaxima: 20
     },
-    // … outros profissionais
+     {
+    id: 3,
+    nome: 'Carlos Santos',
+    tipo: 'Pedreiro',
+    estrelas: 3,
+    descricao: 'Carlos Santos oferece serviços de alvenaria, reformas, construções e reparos em geral. Possui experiência em construção de muros, colocação de pisos, reboco, pintura e acabamento. Atua com responsabilidade, prezando pela limpeza e prazo de entrega.',
+    preco: 180,
+    distancia: 15
+  },
+  {
+     id: 4,
+    nome: "Ana - Faxineira",
+    tipo: "Faxineira",
+    estrelas: 4.6,
+    descricao: "Ana oferece serviços de faxina profunda e especializada, incluindo limpeza pós-obra, higienização de estofados e remoção de manchas. Tem experiência com residências e escritórios.",
+    preco: 110,
+    distancia: 6
+  },
+  {
+     id: 5,
+    nome: "Pedro - Jardineiro",
+    tipo: "Jardineiro",
+    estrelas: 4.1,
+    descricao: "Pedro é especialista em jardinagem e paisagismo, criando e mantendo jardins harmônicos com uso eficiente de recursos naturais. Faz desde projetos simples até manutenções recorrentes.",
+    preco: 140,
+    distancia: 9
+  },
   ],
   agendados: {},
   datasAgendamento: {},
-  comentarios: {},
-  avaliacoes: {},
+  comentarios: {},          // array de comentários por prof
+  avaliacoes: {},           // nota definitiva por prof
+  hoverEstrela: {},         // nota para hover visual
+  notaSelecionada: {},      // nota escolhida antes do envio
   feedbacksVisiveis: {},
   notificacao: null,
-  hoverEstrela: {},
 };
 
 const profissionaisSlice = createSlice({
-  name: 'profissionais',
+  name: 'professionais',
   initialState,
   reducers: {
     agendarProfissional: (state, action) => {
-      const id = action.payload.id;
+      const { id, data } = action.payload;
       state.agendados[id] = true;
-      state.datasAgendamento[id] = action.payload.data;
+      state.datasAgendamento[id] = data;
       state.notificacao = { tipo: 'sucesso', mensagem: 'Agendamento confirmado!' };
     },
     cancelarAgendamento: (state, action) => {
@@ -51,50 +78,63 @@ const profissionaisSlice = createSlice({
       const { id, data } = action.payload;
       state.datasAgendamento[id] = data;
     },
-    enviarFeedbackProfissional: (state, action) => {
-      const { id, comentario, somenteTexto } = action.payload;
-      if (!comentario || (somenteTexto && comentario.trim() === '')) {
-        state.notificacao = { tipo: 'erro', mensagem: 'Comentário vazio.' };
-        return;
-      }
-      if (!state.comentarios[id]) state.comentarios[id] = [];
-      if (!state.avaliacoes[id]) state.avaliacoes[id] = [];
 
-      if (somenteTexto) {
-        state.comentarios[id].push(comentario);
-      } else {
-        const nota = state.hoverEstrela[id] || 0;
-        if (nota === 0) {
-          state.notificacao = { tipo: 'erro', mensagem: 'Nota não atribuída.' };
-          return;
-        }
-        state.comentarios[id].push(comentario);
-        state.avaliacoes[id].push(nota);
-        state.hoverEstrela[id] = 0;
-        state.notificacao = { tipo: 'sucesso', mensagem: 'Feedback enviado!' };
-      }
-      state.feedbacksVisiveis[id] = true;
-    },
-    selecionarEstrela: (state, action) => {
+    // Hover visual
+    setHoverEstrela: (state, action) => {
       const { id, rating } = action.payload;
       state.hoverEstrela[id] = rating;
     },
+
+    // Seleção definitiva
+    selecionarEstrela: (state, action) => {
+      const { id, rating } = action.payload;
+      state.notaSelecionada[id] = rating;
+    },
+
+    enviarFeedbackProfissional: (state, action) => {
+      const { id, comentario } = action.payload;
+      const nota = state.notaSelecionada[id] || 0;
+      if (!state.agendados[id]) {
+         state.notificacao = { tipo: 'erro', mensagem: 'Agendamento necessário para feedback.' };
+         return;
+        }
+      if (!comentario?.trim()) {
+        state.notificacao = { tipo: 'erro', mensagem: 'Comentário vazio.' };
+        return;
+      }
+      if (nota === 0) {
+        state.notificacao = { tipo: 'erro', mensagem: 'Nota não atribuída.' };
+        return;
+      }
+      // inicializa arrays
+      if (!state.comentarios[id]) state.comentarios[id] = [];
+      
+      state.comentarios[id].push(comentario);
+      state.avaliacoes[id] = nota;
+      // reset temporários
+      state.notaSelecionada[id] = 0;
+      state.hoverEstrela[id] = 0;
+      state.feedbacksVisiveis[id] = true;
+      state.notificacao = { tipo: 'sucesso', mensagem: 'Feedback enviado!' };
+    },
+
     limparNotificacao: (state) => {
       state.notificacao = null;
     },
     setFeedbackVisivel: (state, action) => {
-      const id = action.payload;
+      const {id} = action.payload;
       state.feedbacksVisiveis[id] = !state.feedbacksVisiveis[id];
-    },
-  },
+    }
+  }
 });
 
 export const {
   agendarProfissional,
   cancelarAgendamento,
   setDataAgendamento,
-  enviarFeedbackProfissional,
+  setHoverEstrela,
   selecionarEstrela,
+  enviarFeedbackProfissional,
   limparNotificacao,
   setFeedbackVisivel
 } = profissionaisSlice.actions;

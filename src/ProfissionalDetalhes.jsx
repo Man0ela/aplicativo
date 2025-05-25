@@ -10,7 +10,8 @@ import {
   selecionarEstrela,
   setDataAgendamento,
   limparNotificacao,
-  setFeedbackVisivel
+  setHoverEstrela,
+  setFeedbackVisivel,
 } from './features/profDetalhesSlice';
 
 const Notification = ({ type, message }) => {
@@ -36,9 +37,10 @@ function ProfissionalDetalhes() {
     agendados,
     comentarios,
     avaliacoes,
+    notaSelecionada, 
     hoverEstrela,
     feedbacksVisiveis,
-    notificacao
+    notificacao,
   } = useSelector(state => state.profdetalhes);
 
   const [comentarioLocal, setComentarioLocal] = useState('');
@@ -75,9 +77,13 @@ function ProfissionalDetalhes() {
   };
 
   const handleEnviarFeedback = () => {
-    if (comentarioLocal.trim() === '' || !avaliacoes[profId]) {
-      return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Preencha comentário e nota.' }));
+    if (!agendados[profId]) {
+    return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Agende um horário antes de enviar feedback.' }));
     }
+    // Restante das validações
+      if (comentarioLocal.trim() === '' || !notaSelecionada[profId]) {
+    return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Preencha comentário e nota.' }));
+      }
     dispatch(enviarFeedbackProfissional({ id: profId, comentario: comentarioLocal }));
     setComentarioLocal('');
   };
@@ -136,11 +142,11 @@ function ProfissionalDetalhes() {
           {[1, 2, 3, 4, 5].map(num => (
             <span
               key={num}
-              onMouseEnter={() => dispatch(selecionarEstrela({ id: profId, rating: num, hover: true }))}
-              onMouseLeave={() => dispatch(selecionarEstrela({ id: profId, rating: 0, hover: true }))}
-              onClick={() => dispatch(selecionarEstrela({ id: profId, rating: num }))}
+              onMouseEnter={() => dispatch(setHoverEstrela({ id: profId, rating: num }))}
+              onMouseLeave={() => dispatch(setHoverEstrela({ id: profId, rating: 0 }))}
+              onClick={() => dispatch(selecionarEstrela({ id: profId, rating: num}))}
               style={{
-                color: num <= (hoverEstrela[profId] || avaliacoes[profId] || 0) ? 'gold' : 'gray',
+                color: num <= (hoverEstrela[profId] || notaSelecionada[profId] || 0) ? 'gold' : 'gray',
                 cursor: 'pointer',
                 fontSize: '1.5rem'
               }}
@@ -155,22 +161,22 @@ function ProfissionalDetalhes() {
       <div className="mt-3">
         <button
           className="btn btn-secondary"
-          onClick={() => dispatch(setFeedbackVisivel({ id: profId, visivel: !feedbacksVisiveis[profId] }))}
+          onClick={() => dispatch(setFeedbackVisivel({ id: profId}))}
         >
           {feedbacksVisiveis[profId] ? 'Ocultar Feedbacks' : 'Mostrar Feedbacks'}
         </button>
       </div>
 
       {feedbacksVisiveis[profId] && comentarios[profId] && (
-        <div className="mt-4">
-          <h6>Comentários:</h6>
-          {comentarios[profId].map((com, index) => (
-            <div key={index} className="border p-3 rounded mb-2 bg-light">
-              <div>{'★'.repeat(avaliacoes[profId])}{'☆'.repeat(5 - avaliacoes[profId])}</div>
-              <p className="mb-0">{com}</p>
-            </div>
-          ))}
-        </div>
+      <div className="mt-4">
+      <h6>Comentários:</h6>
+      {comentarios[profId].map((com, index) => (
+      <div key={index} className="border p-3 rounded mb-2 bg-light">
+        <div>{'★'.repeat(avaliacoes[profId])}{'☆'.repeat(5 - avaliacoes[profId])}</div>
+        <p className="mb-0">{com}</p>
+      </div>
+      ))}
+      </div>
       )}
     </div>
   );
