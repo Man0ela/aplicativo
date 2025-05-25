@@ -1,8 +1,18 @@
-import React, { useState , useEffect } from "react";
-import cx from 'classnames';
+// Refatorado para usar Redux
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
+import cx from "classnames";
 import styles from "./css/style3.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { 
+  agendarProfissional, 
+  cancelarAgendamento, 
+  enviarFeedbackProfissional, 
+  selecionarEstrela, 
+  setDataAgendamento, 
+  limparNotificacao 
+} from "./features/profsFiltradosSlice"; // ajuste conforme seu path
 
 const profissionais = [
   { id: 1, nome: "João - Piscineiro", tipo: "Piscineiro", estrelas: 4.2, descricao: "João é especialista em manutenção de piscinas." },
@@ -11,22 +21,47 @@ const profissionais = [
   { id: 4, nome: "Ana - Faxineira", tipo: "Faxineira", estrelas: 4.6, descricao: "Ana oferece serviços de faxina profunda e especializada." },
   { id: 5, nome: "Pedro - Jardineiro", tipo: "Jardineiro", estrelas: 4.1, descricao: "Pedro é especialista em jardinagem e paisagismo." },
 ];
-export default function ProfsFiltrados() {
+
+const ProfsFiltrados = () => {
   const [searchParams] = useSearchParams();
   const tipoSelecionado = searchParams.get("tipo");
-  const [agendados, setAgendados] = useState({});
-  const [avaliacoes, setAvaliacoes] = useState({});
-  const [feedbacksVisiveis, setFeedbacksVisiveis] = useState({});
-  const [hoverEstrela, setHoverEstrela] = useState({});
-  const [notificacao, setNotificacao] = useState(null);
-  const [comentarios, setComentarios] = useState({});
-  const [datasAgendamento, setDatasAgendamento] = useState({});
+  const dispatch = useDispatch();
+  const {
+    agendados,
+    avaliacoes,
+    datasAgendamento,
+    comentarios,
+    feedbacksVisiveis,
+    notificacao,
+    hoverEstrela
+  } = useSelector((state) => state.profissionais);
+
   const handleStarHover = (profId, rating) => {
-    setHoverEstrela(prev => ({ ...prev, [profId]: rating }));
+    dispatch(selecionarEstrela({ id: profId, rating, hover: true }));
   };
-   const handleStarLeave = (profId) => {
-    setHoverEstrela(prev => ({ ...prev, [profId]: 0 }));
+  const handleStarLeave = (profId) => {
+    dispatch(selecionarEstrela({ id: profId, rating: 0, hover: true }));
   };
+
+  useEffect(() => {
+    if (notificacao) {
+      const timer = setTimeout(() => {
+        dispatch(limparNotificacao());
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [notificacao, dispatch]);
+
+  const filtrados = profissionais.filter(p => p.tipo === tipoSelecionado);
+
+  const getDataMinima = () => {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
+  };
+
   const Notificacao = () => {
     if (!notificacao) return null;
     return (
@@ -37,118 +72,28 @@ export default function ProfsFiltrados() {
         {notificacao.mensagem}
         <button 
           className={styles.fecharNotificacao}
-          onClick={() => setNotificacao(null)}
-        >
-          ×
-        </button>
+          onClick={() => dispatch(limparNotificacao())}
+        >×</button>
       </div>
     );
   };
-    
-  const filtrados = profissionais.filter(p => p.tipo === tipoSelecionado);
- 
-  
-  const getDataMinima = () => {
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
-    const dia = String(hoje.getDate()).padStart(2, "0");
-    return `${ano}-${mes}-${dia}`;
-  };
 
-  const agendar = (id, data) => {
-  if (!data) {
-    setNotificacao({
-      tipo: 'erro',
-      mensagem: 'Selecione uma data válida!'
-    });
-    return; // Adicione este return para impedir execução posterior
-  }
-
-  const escolhida = new Date(data); 
-  if (escolhida < new Date()) {
-    setNotificacao({ 
-      tipo: 'erro', 
-      mensagem: 'Não é possível agendar para datas passadas!' 
-    });
-    return;
-  }setAgendados(prev => ({ ...prev, [id]: true }));
-  setFeedbacksVisiveis(prev => ({ ...prev, [id]: true }));
-  setNotificacao({
-    tipo: 'sucesso',
-    mensagem: `Agendamento confirmado para ${escolhida.toLocaleDateString('pt-BR')}`
-  });
-};
-useEffect(() => {
-  if (notificacao) {
-    const timer = setTimeout(() => {
-      setNotificacao(null);
-    }, 1000); 
-    
-    return () => clearTimeout(timer); // Limpa o timer se o componente desmontar
-  }
-}, [notificacao]); // Executa sempre que notificacao mudar
-
-
-  const cancelar = id => {
-    setAgendados(prev => {
-      const novo = { ...prev };
-      delete novo[id];
-      return novo;
-    });
-    setFeedbacksVisiveis(prev => ({ ...prev, [id]: false }));
-    setNotificacao({ 
-    tipo: 'sucesso', 
-    mensagem: 'Agendamento cancelado com sucesso!' 
-  });
-  };
-    
-  const selecionarEstrela = (id, nota) => {
-    setAvaliacoes(prev => ({ ...prev, [id]: nota }));
-  };
- 
-
-  const enviarFeedback = (id, texto) => {
-    const nota = avaliacoes[id] || 0;
-    if (!texto.trim()) {
-      setNotificacao({ tipo: 'erro', mensagem: 'Escreva seu comentário!' });
-      return;
-    }
-    if (nota === 0) {
-      setNotificacao({ tipo: 'erro', mensagem: 'Selecione uma nota de 1 a 5 estrelas!' });
-      return;
-    }
-     setNotificacao({
-    tipo: 'sucesso',
-    mensagem: 'Feedback enviado com sucesso!'
-  });
-   
-  
-  // Limpeza
-  setAvaliacoes(prev => ({ ...prev, [id]: 0 }));
-  setComentarios(prev => ({ ...prev, [id]: '' }));
-  setFeedbacksVisiveis(prev => ({ ...prev, [id]: false }));
-};
-    const EstrelasAvaliacao = ({ profId, onRate }) => {
-    return (
-      <div className={styles.avaliacaoEstrelas}>
-        {[1, 2, 3, 4, 5].map(i => (
-          <span
-            key={i}
-            className={cx(styles.estrela, {
-              [styles.hover]: i <= (hoverEstrela[profId] || 0),
-              [styles.selecionada]: i <= (avaliacoes[profId] || 0)
-            })}
-            onMouseEnter={() => handleStarHover(profId, i)}
-            onMouseLeave={() => handleStarLeave(profId)}
-            onClick={() => onRate(profId, i)}
-          >
-            &#9733;
-          </span>
-        ))}
-      </div>
-    );
-  };
+  const EstrelasAvaliacao = ({ profId }) => (
+    <div className={styles.avaliacaoEstrelas}>
+      {[1, 2, 3, 4, 5].map(i => (
+        <span
+          key={i}
+          className={cx(styles.estrela, {
+            [styles.hover]: i <= (hoverEstrela[profId] || 0),
+            [styles.selecionada]: i <= (avaliacoes[profId] || 0)
+          })}
+          onMouseEnter={() => handleStarHover(profId, i)}
+          onMouseLeave={() => handleStarLeave(profId)}
+          onClick={() => dispatch(selecionarEstrela({ id: profId, rating: i }))}
+        >&#9733;</span>
+      ))}
+    </div>
+  );
 
   return (
     <div className={styles.container2}>
@@ -157,78 +102,60 @@ useEffect(() => {
       {filtrados.map(prof => (
         <div key={prof.id} className="profissional">
           <h2>
-            <Link to={`/profissional/${prof.id}`} className="link-profissional">
+            <Link to={`/profissional/${prof.id}`} className={styles.nomeProfissional}>
               {prof.nome}
             </Link>
           </h2>
 
-          {/* Exibição de avaliação média */}
-          <div className={cx(styles.avaliacaoEstrelas)}>
+          <div className={styles.avaliacaoEstrelas}>
             {[1,2,3,4,5].map(i => (
               <span
                 key={i}
                 className={cx(styles.estrela, {
                   [styles.selecionada]: i <= Math.round(prof.estrelas)
                 })}
-              >
-                &#9733;
-              </span>
+              >&#9733;</span>
             ))}
             <span>({prof.estrelas.toFixed(1)})</span>
           </div>
 
-          {/* Agendamento */}
-          <div className="data-agendamento">
-            <label htmlFor={`data-${prof.id}`}>Selecione uma data: </label>
+          <div>
             <input
-        type="date"
-        value={datasAgendamento[prof.id] || ''}
-        onChange={(e) => setDatasAgendamento(prev => ({
-          ...prev,
-            [prof.id]: e.target.value
-        }))}
-         min={getDataMinima()}
-        />
-
-          </div>
-          <div className="botoes">
-            <button className={styles.agendar} onClick={() => {
-              agendar(prof.id, datasAgendamento[prof.id]);
-            }}>Agendar</button>
-            <button  className={styles.cancelar}
-              disabled={!agendados[prof.id]}
-              onClick={() => cancelar(prof.id)}
-            >Cancelar</button>
+              type="date"
+              min={getDataMinima()}
+              value={datasAgendamento[prof.id] || ''}
+              onChange={e => dispatch(setDataAgendamento({ id: prof.id, data: e.target.value }))}
+            />
           </div>
 
-          {/* Feedback */}
+          <div>
+            <button className={styles.agendar} onClick={() => dispatch(agendarProfissional(prof.id))}>
+              Agendar
+            </button>
+            <button className={styles.cancelar} onClick={() => dispatch(cancelarAgendamento(prof.id))} disabled={!agendados[prof.id]}>
+              Cancelar
+            </button>
+          </div>
+
           {feedbacksVisiveis[prof.id] && (
-    <div className="feedback-area">
-      <textarea
-        id={`comentario-${prof.id}`}
-        value={comentarios[prof.id] || ''}
-        onChange={(e) => setComentarios(prev => ({
-          ...prev,
-          [prof.id]: e.target.value
-        }))}
-        rows={3}
-        cols={40}
-        placeholder="Deixe seu comentário"
-      />
-
-      <EstrelasAvaliacao
-        profId={prof.id}
-        onRate={selecionarEstrela}
-      />
-
-              <button onClick={() => {
-                const texto = comentarios[prof.id]?.trim() || '';
-                enviarFeedback(prof.id, texto);
-              }}>Enviar Feedback</button>
+            <div className={styles['feedback-area']}>
+              <textarea
+                value={comentarios[prof.id] || ''}
+                onChange={(e) => dispatch(enviarFeedbackProfissional({ id: prof.id, comentario: e.target.value, somenteTexto: true }))}
+                rows={3}
+                cols={40}
+                placeholder="Deixe seu comentário"
+              />
+              <EstrelasAvaliacao profId={prof.id} />
+              <button className={styles.feedbackButton} onClick={() => dispatch(enviarFeedbackProfissional({ id: prof.id }))}>
+                Enviar Feedback
+              </button>
             </div>
           )}
         </div>
       ))}
     </div>
   );
-}
+};
+
+export default ProfsFiltrados;
