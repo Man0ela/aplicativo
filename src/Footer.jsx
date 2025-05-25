@@ -1,17 +1,17 @@
-// src/components/Footer/Footer.jsx
+// Footer.js (com Redux integrado para os dados do footer)
+
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import styles from './css/Footer.module.css';
 
-const footerItems = [
-  { iconClass: 'bi-share',       title: 'Redes Sociais', text: 'Siga-nos no Instagram, Facebook e Twitter para não perder nenhuma novidade.', to: '/social' },
-  { iconClass: 'bi-envelope',    title: 'Contato',       text: 'Envie um email ou ligue para nossa equipe de suporte.',                      to: '/contact' },
-  { iconClass: 'bi-info-circle', title: 'Sobre Nós',     text: 'Conheça a nossa missão, visão e equipe por trás da SuaEmpresa.',            to: '/' }
-];
-
-const Footer= () => {
+const Footer = () => {
   const navigate = useNavigate();
+
+  // Obtendo dados do Redux
+  const footerItems = useSelector(state => state.footer.items);
+
   return (
     <footer className={styles.footer}>
       <div className={`container px-2 py-2 ${styles.content}`}>
@@ -22,7 +22,6 @@ const Footer= () => {
               <div
                 className={`${styles.featureIcon} d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient mb-3`}
               >
-                {/* Ícone renderizado como fonte */}
                 <i className={`bi ${iconClass} fs-2`} aria-hidden="true"></i>
               </div>
               <h3 className="fs-5 text-body-emphasis mb-2">{title}</h3>

@@ -1,8 +1,9 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
-  const navigate = useNavigate();
+  const { navLinks, logoText } = useSelector(state => state.header);
 
   return (
     <header className="container-fluid mb-3">
@@ -22,28 +23,24 @@ const Header = () => {
           >
             {/* paths aqui */}
           </svg>
-          <span className="fs-4">Getservice</span>
+          <span className="fs-4">{logoText}</span>
         </Link>
 
         {/* Navegação principal */}
         <ul className="nav nav-pills ms-auto justify-content-between align-items-center">
-          <li className="nav-item">
-            <button
-              className="nav-link active"
-            >
-              Login
-            </button>
-          </li>
-          <li className="nav-item">
-            <Link to="#" className="nav-link">
-              Segurança
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link to="#" className="nav-link">
-              Profissional
-            </Link>
-          </li>
+          {navLinks.map((item, idx) => (
+            <li key={idx} className="nav-item">
+              {item.type === 'button' ? (
+                <button className={`nav-link ${item.active ? 'active' : ''}`}>
+                  {item.label}
+                </button>
+              ) : (
+                <Link to={item.to} className="nav-link">
+                  {item.label}
+                </Link>
+              )}
+            </li>
+          ))}
         </ul>
 
         {/* Ações à direita */}

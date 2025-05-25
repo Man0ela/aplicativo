@@ -4,6 +4,10 @@ import buscaReducer from './features/buscaSlice.jsx';
 import telainicialReducer from './features/telainicialSlice';
 import profissionaisReducer from './features/profsFiltradosSlice';
 import profdetalhesReducer from './features/profDetalhesSlice'; // ajuste o path conforme sua estrutura
+import footerReducer from "./features/footerSlice.jsx"
+import headerReducer from "./features/headerSlice.jsx"
+import SobreNosReducer from './features/sobrenosSlice.jsx';
+import ServicosReducer from './features/servicosSlice.jsx';
 // Configure a store com o slice
 export const store = configureStore({
   reducer: {
@@ -11,6 +15,10 @@ export const store = configureStore({
     telaInicial: telainicialReducer, 
     profissionais: profissionaisReducer,
     profdetalhes: profdetalhesReducer,
+    footer: footerReducer,
+    header: headerReducer,
+    sobreNos: SobreNosReducer,
+    servicos: ServicosReducer,
   }
 });
 
