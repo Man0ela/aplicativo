@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLastButtonClicked } from "./features/telainicialSlice"; // Importe a action
 import "bootstrap/dist/css/bootstrap.min.css";
-import styles from "./css/style3.module.css";
 
 function TelaInicial() {
   const navigate = useNavigate();

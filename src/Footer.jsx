@@ -1,5 +1,3 @@
-// Footer.js (com Redux integrado para os dados do footer)
-
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
