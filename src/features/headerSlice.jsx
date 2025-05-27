@@ -4,8 +4,8 @@ const initialState = {
   logoText: 'Getservice',
   navLinks: [
     { label: 'Login', type: 'button', active: true },
-    { label: 'Segurança', type: 'link', to: '/seguranca' },
-    { label: 'Profissional', type: 'link', to: '/profissional' }
+    { label: 'Segurança', type: 'link', active: true },
+    { label: 'Profissional', type: 'link', to: '/buscar' }
   ]
 };
 
