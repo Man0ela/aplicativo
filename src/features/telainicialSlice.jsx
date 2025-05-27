@@ -1,8 +1,7 @@
-// src/store/slices/telaInicialSlice.jsx
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  showWelcomeMessage: true, // Exemplo: controle de UI
+  showWelcomeMessage: true, 
   lastButtonClicked: null, // Rastrear última ação do usuário
 };
 

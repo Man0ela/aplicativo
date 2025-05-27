@@ -1,4 +1,3 @@
-// src/store.jsx
 import { configureStore } from '@reduxjs/toolkit';
 import buscaReducer from './features/buscaSlice.jsx';
 import telainicialReducer from './features/telainicialSlice';

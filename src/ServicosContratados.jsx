@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleAvaliacaoVisivel } from './features/servicosSlice'; // ajuste o caminho
+import { toggleAvaliacaoVisivel } from './features/servicosSlice'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 

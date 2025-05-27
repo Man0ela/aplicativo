@@ -8,7 +8,7 @@ const Header = () => {
   return (
     <header className="container-fluid mb-3">
       <div className="d-flex flex-wrap align-items-center justify-content-between py-3">
-        {/* Logo e título */}
+        
         <Link
           to="/"
           className="d-flex align-items-center text-dark text-decoration-none"
@@ -21,12 +21,12 @@ const Header = () => {
             className="bi bi-bootstrap-fill me-2"
             viewBox="0 0 16 16"
           >
-            {/* paths aqui */}
+
           </svg>
           <span className="fs-4">{logoText}</span>
         </Link>
 
-        {/* Navegação principal */}
+        
         <ul className="nav nav-pills ms-auto justify-content-between align-items-center">
           {navLinks.map((item, idx) => (
             <li key={idx} className="nav-item">

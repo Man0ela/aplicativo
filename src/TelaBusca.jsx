@@ -2,7 +2,7 @@ import React from "react";
 import cx from 'classnames';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { setTipoServico } from './features/buscaSlice.jsx'; // Ajuste o caminho
+import { setTipoServico } from './features/buscaSlice.jsx'; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./css/style3.module.css";
 
@@ -44,7 +44,7 @@ function TelaBusca() {
             placeholder="Ex: Piscineiro, Faxineira, Jardineiro"
             list="sugestoes-servico"
             value={tipoServico}
-            onChange={handleChange} // Usa a função que atualiza o Redux
+            onChange={handleChange} // usa a função que atualiza o Redux
             style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
           />
         </div>

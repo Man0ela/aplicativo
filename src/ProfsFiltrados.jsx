@@ -1,4 +1,3 @@
-// Refatorado para usar Redux
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
@@ -12,7 +11,7 @@ import {
   selecionarEstrela, 
   setDataAgendamento, 
   limparNotificacao 
-} from "./features/profsFiltradosSlice"; // ajuste conforme seu path
+} from "./features/profsFiltradosSlice";
 
 const profissionais = [
   { id: 1, nome: "João - Piscineiro", tipo: "Piscineiro", estrelas: 4.2, descricao: "João é especialista em manutenção de piscinas." },

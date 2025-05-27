@@ -80,7 +80,7 @@ function ProfissionalDetalhes() {
     if (!agendados[profId]) {
     return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Agende um horário antes de enviar feedback.' }));
     }
-    // Restante das validações
+    
       if (comentarioLocal.trim() === '' || !notaSelecionada[profId]) {
     return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Preencha comentário e nota.' }));
       }

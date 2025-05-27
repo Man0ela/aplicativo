@@ -19,7 +19,7 @@ const buscaSlice = createSlice({
       state.profissionais = [];
     }
   },
-  // (Opcional) Adicione extraReducers aqui se for fazer chamadas assíncronas
+ 
 });
 
 export const { setTipoServico, limparBusca } = buscaSlice.actions;

@@ -7,7 +7,7 @@ import styles from './css/Footer.module.css';
 const Footer = () => {
   const navigate = useNavigate();
 
-  // Obtendo dados do Redux
+  
   const footerItems = useSelector(state => state.footer.items);
 
   return (

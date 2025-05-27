@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setLastButtonClicked } from "./features/telainicialSlice"; // Importe a action
+import { setLastButtonClicked } from "./features/telainicialSlice"; 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function TelaInicial() {
