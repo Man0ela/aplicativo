@@ -22,6 +22,6 @@ export const store = configureStore({
     sobreNos: SobreNosReducer,
     servicosContratados: ServicosReducer,
 
-    dashboardProfissional:
+    dashboardProfissional:dashboardProfissionalReducer,
   }
 });
