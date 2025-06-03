@@ -1,60 +1,64 @@
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setActiveNavLink } from './features/headerSlice';
 
-const Header = () => {
-  const { navLinks, logoText } = useSelector(state => state.header);
+export default function Header() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { logoText, navLinks } = useSelector(state => state.header);
+
+  const handleLogoClick = () => {
+    navigate('/');
+    dispatch(setActiveNavLink('')); // desativa link ativo ao clicar no logo, opcional
+  };
+
+  const handleNavClick = (label, to) => {
+    dispatch(setActiveNavLink(label));
+    if (to) navigate(to);
+  };
 
   return (
-    <header className="container-fluid mb-3">
-      <div className="d-flex flex-wrap align-items-center justify-content-between py-3">
-        
-        <Link
-          to="/"
-          className="d-flex align-items-center text-dark text-decoration-none"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            fill="currentColor"
-            className="bi bi-bootstrap-fill me-2"
-            viewBox="0 0 16 16"
-          >
+    <header className="d-flex justify-content-between align-items-center p-3 border-bottom">
+      <button 
+        onClick={handleLogoClick} 
+        style={{ 
+          cursor: 'pointer', 
+          fontWeight: 'bold', 
+          fontSize: '1.5rem', 
+          background: 'none', 
+          border: 'none',
+          color: '#0d6efd'
+        }}
+        aria-label="Voltar para tela inicial"
+      >
+        {logoText}
+      </button>
 
-          </svg>
-          <span className="fs-4">{logoText}</span>
-        </Link>
-
-        
-        <ul className="nav nav-pills ms-auto justify-content-between align-items-center">
-          {navLinks.map((item, idx) => (
-            <li key={idx} className="nav-item">
-              {item.type === 'button' ? (
-                <button className={`nav-link ${item.active ? 'active' : ''}`}>
-                  {item.label}
+      <nav>
+        <ul className="nav">
+          {navLinks.map(({ label, type, to, active }) => (
+            <li key={label} className="nav-item">
+              {type === 'link' ? (
+                <button
+                  onClick={() => handleNavClick(label, to)}
+                  className={`nav-link btn btn-link ${active ? 'active fw-bold' : ''}`}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {label}
                 </button>
               ) : (
-                <Link to={item.to} className="nav-link">
-                  {item.label}
-                </Link>
+                <button
+                  onClick={() => handleNavClick(label)}
+                  className={`btn btn-primary ${active ? '' : 'btn-outline-primary'}`}
+                >
+                  {label}
+                </button>
               )}
             </li>
           ))}
         </ul>
-
-        {/* Ações à direita */}
-        <div className="d-flex align-items-center">
-          <Link
-            to="/servicos-contratados"
-            className="text-dark text-decoration-none me-3"
-          >
-            <i className="bi bi-person-circle fs-3"></i>
-          </Link>
-        </div>
-      </div>
+      </nav>
     </header>
   );
-};
-
-export default Header;
+}
