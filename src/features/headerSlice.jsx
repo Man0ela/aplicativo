@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  logoText: 'Getservice',
+  logoText: 'GetService',
   navLinks: [
     { label: 'Login', type: 'button', active: true },
-    { label: 'Segurança', type: 'link', active: true },
-    { label: 'Profissional', type: 'link', to: '/buscar' }
+    { label: 'Segurança', type: 'link', active: false, to: '/seguranca' },
+    { label: 'Profissional', type: 'link', active: false, to: '/buscar' }
   ]
 };
 
