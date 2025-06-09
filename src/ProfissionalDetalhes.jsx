@@ -1,197 +1,82 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import styles from "./css/style3.module.css";
+import { fetchProfissionalById } from './features/profDetalhesSlice';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  fetchProfissionalById,
-  agendarProfissional,
-  cancelarAgendamento,
-  enviarFeedbackProfissional,
-  selecionarEstrela,
-  setDataAgendamento,
-  limparNotificacao,
-  setHoverEstrela,
-  setFeedbackVisivel,
-} from './features/profDetalhesSlice';
-
-const Notification = ({ type, message }) => {
-  if (!message) return null;
-  return (
-    <div className={`alert ${type === 'success' ? 'alert-success' : 'alert-danger'}`}>
-      {message}
-    </div>
-  );
-};
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function ProfissionalDetalhes() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const profId = Number(id);
 
-  const profissional = useSelector(state =>
-    state.profdetalhes.lista.find(p => p.id === profId)
-  );
+  // Seletores simplificados para pegar os dados do novo estado
+  const { profissional, status, error } = useSelector(state => state.profdetalhes);
 
-  const {
-    loading,
-    datasAgendamento,
-    agendados,
-    comentarios,
-    avaliacoes,
-    notaSelecionada, 
-    hoverEstrela,
-    feedbacksVisiveis,
-    notificacao,
-  } = useSelector(state => state.profdetalhes);
-
-  const [comentarioLocal, setComentarioLocal] = useState('');
   useEffect(() => {
-    // Se o profissional não estiver no estado, busca na API
-    if (!profissional) {
-      dispatch(fetchProfissionalById(profId));
+    // Busca os dados do profissional se o ID da URL mudar
+    if (id) {
+      dispatch(fetchProfissionalById(id));
     }
-  }, [profissional, profId, dispatch]);
-  
-  useEffect(() => {
-    if (notificacao) {
-      const timer = setTimeout(() => {
-        dispatch(limparNotificacao());
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [notificacao, dispatch]);
+  }, [id, dispatch]);
 
-  if (!profissional) {
-    return <div className="container mt-5" style={{ maxWidth: '700px' }}>Profissional não encontrado.</div>;
+  // --- Renderização de Status ---
+  if (status === 'loading') {
+    return <div className="container mt-5 text-center"><p>Carregando perfil...</p></div>;
   }
-  if (loading) {
-    return <div className="container mt-5">Carregando...</div>;
+
+  if (status === 'failed') {
+    return (
+      <div className="container mt-5 text-center">
+        <div className="alert alert-danger">Erro: {error || 'Profissional não encontrado.'}</div>
+        <button onClick={() => navigate(-1)} className="btn btn-primary">Voltar</button>
+      </div>
+    );
   }
 
   if (!profissional) {
-    return <div className="container mt-5">Profissional não encontrado.</div>;
+    return null; // ou uma tela de "Selecione um profissional"
   }
-  const handleConfirmar = () => {
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    const dataSelecionada = new Date(datasAgendamento[profId]);
-    if (!datasAgendamento[profId]) {
-      dispatch(limparNotificacao());
-      return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Selecione uma data.' }));
-    }
-    if (dataSelecionada < hoje) {
-      return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Data inválida.' }));
-    }
-    dispatch(agendarProfissional({ id: profId, data: datasAgendamento[profId] }));
-  };
 
-  const handleCancelar = () => {
-    dispatch(cancelarAgendamento(profId));
-  };
-
-  const handleEnviarFeedback = () => {
-    if (!agendados[profId]) {
-    return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Agende um horário antes de enviar feedback.' }));
-    }
-    
-      if (comentarioLocal.trim() === '' || !notaSelecionada[profId]) {
-    return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Preencha comentário e nota.' }));
-      }
-    dispatch(enviarFeedbackProfissional({ id: profId, comentario: comentarioLocal }));
-    setComentarioLocal('');
-  };
-
-  const dataMinima = () => {
-    const hoje = new Date();
-    const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoje.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
-  };
-
+  // --- Card de Perfil ---
   return (
-    <div className={`container mt-5 ${styles["perfil-container"]}`} style={{ maxWidth: '700px' }}>
-      <h2 className={styles["titulo-profissional"]}>{profissional.nome}</h2>
-      <h4 className={styles["subtitulo"]}>{profissional.tipo}</h4>
-      <div className="mb-3">
-        {'★'.repeat(profissional.estrelas)}{'☆'.repeat(5 - profissional.estrelas)}
-      </div>
-      <p>{profissional.descricao}</p>
-      <p><strong>Preço:</strong> R$ {profissional.preco.toFixed(2)}</p>
-      <p><strong>Distância:</strong> {profissional.distancia} km</p>
-
-      <Notification type={notificacao?.tipo} message={notificacao?.mensagem} />
-
-      <div className="mt-4">
-        <h5>Agendamento</h5>
-        {!agendados[profId] ? (
-          <div>
-            <input
-              type="date"
-              min={dataMinima()}
-              className="form-control my-2"
-              value={datasAgendamento[profId] || ''}
-              onChange={(e) => dispatch(setDataAgendamento({ id: profId, data: e.target.value }))}
-            />
-            <button className="btn btn-success" onClick={handleConfirmar}>Confirmar Agendamento</button>
-          </div>
-        ) : (
-          <div>
-            <p>Agendado para: {datasAgendamento[profId]}</p>
-            <button className="btn btn-danger" onClick={handleCancelar}>Cancelar Agendamento</button>
-          </div>
-        )}
-      </div>
-
-      <div className="mt-5">
-        <h5>Feedback</h5>
-        <textarea
-          className="form-control my-2"
-          value={comentarioLocal}
-          onChange={(e) => setComentarioLocal(e.target.value)}
-          placeholder="Escreva seu comentário..."
-        />
-        <div className="mb-2">
-          {[1, 2, 3, 4, 5].map(num => (
-            <span
-              key={num}
-              onMouseEnter={() => dispatch(setHoverEstrela({ id: profId, rating: num }))}
-              onMouseLeave={() => dispatch(setHoverEstrela({ id: profId, rating: 0 }))}
-              onClick={() => dispatch(selecionarEstrela({ id: profId, rating: num}))}
-              style={{
-                color: num <= (hoverEstrela[profId] || notaSelecionada[profId] || 0) ? 'gold' : 'gray',
-                cursor: 'pointer',
-                fontSize: '1.5rem'
-              }}
-            >
-              ★
-            </span>
-          ))}
+    <div className="container mt-5 d-flex justify-content-center">
+      <div className="card shadow-sm" style={{ width: '100%', maxWidth: '600px' }}>
+        <div className="card-header bg-primary text-white">
+          <h2 className="card-title mb-0">{profissional.nome}</h2>
+          <p className="card-subtitle mb-0">{profissional.tipo}</p>
         </div>
-        <button className="btn btn-primary" onClick={handleEnviarFeedback}>Enviar Feedback</button>
-      </div>
+        <div className="card-body">
+          <div className="mb-3 d-flex align-items-center">
+            <div className="text-warning me-2" style={{ fontSize: '1.2rem' }}>
+              {'★'.repeat(Math.round(profissional.estrelas))}
+              {'☆'.repeat(5 - Math.round(profissional.estrelas))}
+            </div>
+            <span className="badge bg-primary-subtle text-primary-emphasis rounded-pill">
+              {profissional.estrelas.toFixed(1)} de avaliação
+            </span>
+          </div>
 
-      <div className="mt-3">
-        <button
-          className="btn btn-secondary"
-          onClick={() => dispatch(setFeedbackVisivel({ id: profId}))}
-        >
-          {feedbacksVisiveis[profId] ? 'Ocultar Feedbacks' : 'Mostrar Feedbacks'}
-        </button>
-      </div>
+          <p className="card-text">{profissional.descricao}</p>
+          
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+              Preço base do serviço:
+              <span className="fw-bold">R$ {profissional.preco.toFixed(2)}</span>
+            </li>
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+              Distância aproximada:
+              <span className="fw-bold">{profissional.distancia} km</span>
+            </li>
+          </ul>
 
-      {feedbacksVisiveis[profId] && comentarios[profId] && (
-      <div className="mt-4">
-      <h6>Comentários:</h6>
-      {comentarios[profId].map((com, index) => (
-      <div key={index} className="border p-3 rounded mb-2 bg-light">
-        <div>{'★'.repeat(avaliacoes[profId])}{'☆'.repeat(5 - avaliacoes[profId])}</div>
-        <p className="mb-0">{com}</p>
+          <div className="card-footer text-center bg-white border-top-0 pt-4">
+             <button onClick={() => navigate(-1)} className="btn btn-outline-secondary">
+               <i className="bi bi-arrow-left me-2"></i>Voltar
+             </button>
+          </div>
+        </div>
       </div>
-      ))}
-      </div>
-      )}
     </div>
   );
 }
