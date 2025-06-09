@@ -37,7 +37,7 @@ function App() {
           <Route path="/buscar" element={<TelaBusca />} />
           <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
           <Route path="/profissional/:id" element={<ProfissionalDetalhes />} />
-          <Route path="/servicos-contratados" element={<ServicosContratados />} />
+          <Route path="/historico" element={<ServicosContratados />} />
           <Route path="/sobre-nos" element={<SobreNos />} />
 
           {/* Dashboard para profissional */}

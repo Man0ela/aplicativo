@@ -11,8 +11,7 @@ function TelaInicial() {
     (state) => state.telaInicial
   );
 
-  const IMG = process.env.PUBLIC_URL + "/images/prestador-de-servicos.png";
-
+  const IMG = "/images/prestador-de-servicos.png"; 
   // Função para navegar e registrar a ação no Redux
   const handleNavigation = (path, buttonName) => {
     dispatch(setLastButtonClicked(buttonName));

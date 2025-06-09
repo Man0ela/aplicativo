@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from "./css/style3.module.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
+  fetchProfissionalById,
   agendarProfissional,
   cancelarAgendamento,
   enviarFeedbackProfissional,
@@ -33,6 +34,7 @@ function ProfissionalDetalhes() {
   );
 
   const {
+    loading,
     datasAgendamento,
     agendados,
     comentarios,
@@ -44,7 +46,13 @@ function ProfissionalDetalhes() {
   } = useSelector(state => state.profdetalhes);
 
   const [comentarioLocal, setComentarioLocal] = useState('');
-
+  useEffect(() => {
+    // Se o profissional não estiver no estado, busca na API
+    if (!profissional) {
+      dispatch(fetchProfissionalById(profId));
+    }
+  }, [profissional, profId, dispatch]);
+  
   useEffect(() => {
     if (notificacao) {
       const timer = setTimeout(() => {
@@ -57,7 +65,13 @@ function ProfissionalDetalhes() {
   if (!profissional) {
     return <div className="container mt-5" style={{ maxWidth: '700px' }}>Profissional não encontrado.</div>;
   }
+  if (loading) {
+    return <div className="container mt-5">Carregando...</div>;
+  }
 
+  if (!profissional) {
+    return <div className="container mt-5">Profissional não encontrado.</div>;
+  }
   const handleConfirmar = () => {
     const hoje = new Date();
     hoje.setHours(0, 0, 0, 0);

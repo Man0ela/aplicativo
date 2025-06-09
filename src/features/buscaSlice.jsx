@@ -1,15 +1,41 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 
-// Adapter para normalizar profissionais
+// O adapter ajuda a gerenciar a lista de profissionais de forma eficiente.
 const professionalsAdapter = createEntityAdapter();
 
-// Thunk para buscar profissionais
+//
+// AQUI ESTÁ A CORREÇÃO PRINCIPAL
+//
 export const fetchProfissionais = createAsyncThunk(
   'busca/fetchProfissionais',
-  async () => {
-    const response = await fetch('http://localhost:3001/profissionais');
-    if (!response.ok) throw new Error('Falha ao buscar profissionais');
-    return await response.json();
+  // 1. A função agora aceita 'tipoServico' como argumento.
+  async (tipoServico, { rejectWithValue }) => {
+    
+    // 2. Se o termo de busca não for uma string válida, retorna uma lista vazia para evitar erros.
+    if (typeof tipoServico !== 'string' || tipoServico.trim() === '') {
+      return []; 
+    }
+
+    // 3. O 'tipoServico' é adicionado à URL para que o json-server filtre os dados.
+    // O `tipo_like` faz uma busca por texto no campo "tipo" do seu db.json.
+    const url = `http://localhost:3001/profissionais?tipo_like=${encodeURIComponent(tipoServico)}`;
+    
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('A requisição ao servidor falhou.');
+      }
+      const data = await response.json();
+      
+      // Se a API retorna uma lista vazia, informamos ao usuário.
+      if (data.length === 0) {
+        return rejectWithValue(`Nenhum profissional encontrado para "${tipoServico}".`);
+      }
+      
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
 );
 
@@ -17,7 +43,7 @@ const buscaSlice = createSlice({
   name: 'busca',
   initialState: professionalsAdapter.getInitialState({
     tipoServico: '',
-    status: 'idle',
+    status: 'idle', // idle | loading | succeeded | failed
     error: null,
   }),
   reducers: {
@@ -29,7 +55,7 @@ const buscaSlice = createSlice({
       professionalsAdapter.removeAll(state);
       state.status = 'idle';
       state.error = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -39,21 +65,22 @@ const buscaSlice = createSlice({
       })
       .addCase(fetchProfissionais.fulfilled, (state, action) => {
         state.status = 'succeeded';
+        // `setAll` limpa o estado antigo e adiciona apenas os profissionais filtrados.
         professionalsAdapter.setAll(state, action.payload);
       })
       .addCase(fetchProfissionais.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
+        professionalsAdapter.removeAll(state); // Limpa a lista em caso de erro.
       });
-  }
+  },
 });
 
 export const { setTipoServico, limparBusca } = buscaSlice.actions;
-export default buscaSlice.reducer;
 
-// Seletores gerados pelo adapter
+// Seletor para pegar todos os profissionais do estado da busca.
 export const {
   selectAll: selectAllProfissionais,
-  selectById: selectProfissionalById,
-  selectIds: selectProfissionalIds,
 } = professionalsAdapter.getSelectors((state) => state.busca);
+
+export default buscaSlice.reducer;

@@ -1,16 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchProfissionais = createAsyncThunk(
-  'profissionais/fetchProfissionais',
-  async () => {
-    const response = await axios.get('http://localhost:3001/profissionais');
+// Thunk mais eficiente para buscar UM profissional pelo seu ID
+export const fetchProfissionalById = createAsyncThunk(
+  'profDetalhes/fetchProfissionalById',
+  async (id) => {
+    const response = await axios.get(`http://localhost:3001/profissionais/${id}`);
     return response.data;
   }
 );
 
 const initialState = {
-  lista: [],
+  // A lista agora funciona como um cache
+  lista: [], 
   loading: false,
   error: null,
   agendados: {},
@@ -23,10 +25,14 @@ const initialState = {
   notificacao: null,
 };
 
-const profissionaisSlice = createSlice({
-  name: 'profissionais',
+// RENOMEADO para 'profDetalhes' para evitar conflito
+const profDetalhesSlice = createSlice({
+  name: 'profDetalhes', 
   initialState,
   reducers: {
+    // Seus reducers (agendarProfissional, cancelarAgendamento, etc.) continuam aqui...
+    // Vou omitir por brevidade, pois eles já estavam corretos.
+    // Cole aqui todos os seus reducers do arquivo original.
     agendarProfissional: (state, action) => {
       const { id, data } = action.payload;
       state.agendados[id] = true;
@@ -44,8 +50,8 @@ const profissionaisSlice = createSlice({
       state.datasAgendamento[id] = data;
     },
     setNotificacao: (state, action) => {
-    const { tipo, mensagem } = action.payload;
-    state.notificacao = { tipo, mensagem };
+      const { tipo, mensagem } = action.payload;
+      state.notificacao = { tipo, mensagem };
     },
     setHoverEstrela: (state, action) => {
       const { id, rating } = action.payload;
@@ -89,19 +95,26 @@ const profissionaisSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProfissionais.pending, (state) => {
+      .addCase(fetchProfissionalById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchProfissionais.fulfilled, (state, action) => {
+      .addCase(fetchProfissionalById.fulfilled, (state, action) => {
         state.loading = false;
-        state.lista = action.payload;
+        const profissional = action.payload;
+        // Adiciona ou atualiza o profissional na lista (cache)
+        const index = state.lista.findIndex(p => p.id === profissional.id);
+        if (index !== -1) {
+          state.lista[index] = profissional;
+        } else {
+          state.lista.push(profissional);
+        }
       })
-      .addCase(fetchProfissionais.rejected, (state, action) => {
+      .addCase(fetchProfissionalById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
-  }
+  },
 });
 
 export const {
@@ -113,7 +126,7 @@ export const {
   enviarFeedbackProfissional,
   limparNotificacao,
   setFeedbackVisivel,
-  setNotificacao 
-} = profissionaisSlice.actions;
+  setNotificacao,
+} = profDetalhesSlice.actions;
 
-export default profissionaisSlice.reducer;
+export default profDetalhesSlice.reducer;

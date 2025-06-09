@@ -5,7 +5,8 @@ const initialState = {
   navLinks: [
     { label: 'Login', type: 'button', active: true },
     { label: 'Segurança', type: 'link', active: false, to: '/seguranca' },
-    { label: 'Profissional', type: 'link', active: false, to: '/buscar' }
+    { label: 'Profissional', type: 'link', active: false, to: '/buscar' },
+    { label: 'Histórico', type: 'link', active: false, to: '/historico' }
   ]
 };
 
