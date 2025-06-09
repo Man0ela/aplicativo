@@ -15,7 +15,7 @@ import DashboardProfissional from "./DashboardProfissional";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-
+//npx json-server --watch db.json --port 3001
 function App() {
   const location = useLocation();
 

@@ -1,15 +1,5 @@
 import { createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
 import axios from 'axios';
-import * as Yup from 'yup';
-
-// 1. Validação com Yup: Define as regras para um novo serviço.
-const servicoSchema = Yup.object({
-    nome: Yup.string().required('O nome do serviço é obrigatório.'),
-    tipo: Yup.string().required('O tipo de serviço é obrigatório.'),
-    data: Yup.date().required('A data é obrigatória.').typeError('Formato de data inválido.'),
-    avaliacao: Yup.string().required('A avaliação é obrigatória.').min(10, 'A avaliação deve ter no mínimo 10 caracteres.'),
-    icon: Yup.string().default('tools'), // Valor padrão se não for fornecido
-});
 
 // 2. createEntityAdapter: Otimiza o armazenamento dos serviços.
 // Em vez de um array, teremos um objeto com 'ids' e 'entities'.
@@ -76,12 +66,26 @@ export const enviarAvaliacao = createAsyncThunk(
         }
     }
 );
+    export const cancelarServico = createAsyncThunk(
+    'servicosContratados/cancelarServico',
+    async (servicoId, { rejectWithValue }) => {
+        try {
+            // A requisição DELETE não precisa de corpo, apenas da URL com o ID.
+            await axios.delete(`http://localhost:3001/servicos/${servicoId}`);
+            // Retorna o ID para que possamos removê-lo do nosso estado.
+            return servicoId;
+        } catch (error) {
+            return rejectWithValue('Não foi possível cancelar o serviço.');
+        }
+    }
+);
 
 // O estado inicial agora usa o adapter e controla status da API.
 const initialState = servicesAdapter.getInitialState({
     status: 'idle', // idle | loading | succeeded | failed
     error: null,
-    avaliacoesVisiveis: {} // Mantemos o estado da UI
+    avaliacoesVisiveis: {} ,// Mantemos o estado da UI
+    actionStatus: { type: null, servicoId: null, status: 'idle' } 
 });
 
 const servicosContratadosSlice = createSlice({
@@ -95,6 +99,9 @@ const servicosContratadosSlice = createSlice({
         },
         clearServicosError: (state) => {
             state.error = null;
+        },
+         resetActionStatus: (state) => {
+            state.actionStatus = { type: null, servicoId: null, status: 'idle' };
         }
     },
     // extraReducers lida com as ações das thunks.
@@ -102,21 +109,27 @@ const servicosContratadosSlice = createSlice({
         builder
             // Casos para fetchServicos
             .addCase(fetchServicos.pending, (state) => {
-                state.status = 'loading';
-            })
-            .addCase(fetchServicos.fulfilled, (state, action) => {
-                state.status = 'succeeded';
-                // Usa o adapter para popular o estado de forma normalizada.
-                servicesAdapter.setAll(state, action.payload);
-            })
-            .addCase(fetchServicos.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.payload;
-            })
-            .addCase(contratarServico.fulfilled, (state, action) => {
-                servicesAdapter.addOne(state, action.payload);
-                // Você pode adicionar uma notificação de sucesso aqui se quiser
-            })
+            state.status = 'loading';
+        })
+        .addCase(fetchServicos.fulfilled, (state, action) => {
+            state.status = 'succeeded';
+            servicesAdapter.setAll(state, action.payload);
+        })
+        .addCase(fetchServicos.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.payload;
+        })
+            .addCase(contratarServico.pending, (state, action) => {
+            state.actionStatus = { type: 'contratar', profissionalId: action.meta.arg.profissional.id, status: 'loading' };
+        })
+        .addCase(contratarServico.fulfilled, (state, action) => { // <-- Apenas uma vez, com a lógica unificada
+            state.actionStatus = { status: 'succeeded' };
+            servicesAdapter.addOne(state, action.payload);
+        })
+        .addCase(contratarServico.rejected, (state, action) => {
+            state.actionStatus = { status: 'failed' };
+            state.error = action.payload;
+        })
 
             // Atualiza o serviço que foi avaliado no estado.
             .addCase(enviarAvaliacao.fulfilled, (state, action) => {
@@ -124,12 +137,23 @@ const servicosContratadosSlice = createSlice({
                     id: action.payload.id,
                     changes: action.payload
                 });
-            });
-            
+            })
+            .addCase(cancelarServico.pending, (state, action) => {
+            state.actionStatus = { type: 'cancelar', servicoId: action.meta.arg, status: 'loading' };
+        })
+        .addCase(cancelarServico.fulfilled, (state, action) => { // <-- Apenas uma vez, com a lógica unificada
+            state.actionStatus = { status: 'succeeded' };
+            servicesAdapter.removeOne(state, action.payload);
+        })
+        .addCase(cancelarServico.rejected, (state, action) => {
+            state.actionStatus = { status: 'failed' };
+            state.error = action.payload;
+        })   
+             
     }
 });
 
-export const { toggleAvaliacaoVisivel, clearServicosError } = servicosContratadosSlice.actions;
+export const { toggleAvaliacaoVisivel, clearServicosError,  resetActionStatus} = servicosContratadosSlice.actions;
 
 // 4. Exporta os seletores gerados pelo adapter.
 export const {

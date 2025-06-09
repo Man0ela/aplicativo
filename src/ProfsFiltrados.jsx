@@ -1,86 +1,70 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
-import { selectAllProfissionais, fetchProfissionais } from "./features/buscaSlice"; // Importado do buscaSlice
-import {
-  agendarProfissional,
-  cancelarAgendamento,
-  enviarFeedbackProfissional,
-  selecionarEstrela,
-  setDataAgendamento,
-  limparNotificacao,
-  setFeedbackVisivel,
-} from "./features/profsFiltradosSlice";
+
+// 1. IMPORTAÇÕES DA BUSCA (permanecem as mesmas)
+import { selectAllProfissionais, fetchProfissionais } from "./features/buscaSlice";
+
+// 2. IMPORTAÇÕES DO SLICE DE FILTRADOS (agora simplificado)
+// A única responsabilidade deste slice é guardar a data selecionada no calendário.
+import { setDataAgendamento } from "./features/profsFiltradosSlice"; 
+
+// 3. IMPORTAÇÕES DA LÓGICA DE SERVIÇOS (o cérebro da operação)
+// Importamos toda a lógica de agendar, cancelar e buscar os serviços reais.
+import { 
+    contratarServico, 
+    cancelarServico,
+    fetchServicos,
+    selectAllServicos,
+    resetActionStatus
+} from './features/servicosSlice';
+
 import cx from "classnames";
 import styles from "./css/style3.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { contratarServico } from './features/servicosSlice';
 
-// Componentes internos podem ser mantidos como no seu código original
-const Notificacao = ({ notificacao, onClear }) => {
-  if (!notificacao) return null;
-  return (
-    <div className={cx(styles.notificacao, styles[notificacao.tipo])}>
-      {notificacao.mensagem}
-      <button className={styles.fecharNotificacao} onClick={onClear}>×</button>
-    </div>
-  );
-};
-
-const EstrelasAvaliacao = ({ profId, dispatch, hoverEstrela, avaliacoes }) => (
-    <div className={styles.avaliacaoEstrelas}>
-        {[1, 2, 3, 4, 5].map((i) => (
-            <span
-                key={i}
-                className={cx(styles.estrela, {
-                    [styles.hover]: i <= (hoverEstrela[profId] || 0),
-                    [styles.selecionada]: i <= (avaliacoes[profId] || 0),
-                })}
-                onMouseEnter={() => dispatch(selecionarEstrela({ id: profId, rating: i, hover: true }))}
-                onMouseLeave={() => dispatch(selecionarEstrela({ id: profId, rating: 0, hover: true }))}
-                onClick={() => dispatch(selecionarEstrela({ id: profId, rating: i }))}
-            >
-                ★
-            </span>
-        ))}
-    </div>
-);
 
 const ProfsFiltrados = () => {
   const [searchParams] = useSearchParams();
   const tipoSelecionado = searchParams.get("tipo");
   const dispatch = useDispatch();
 
-  const status = useSelector((state) => state.busca.status);
-  const error = useSelector((state) => state.busca.error);
+  // --- SELETORES DE ESTADO ATUALIZADOS ---
+
+  // Estado da busca de profissionais
+  const statusBusca = useSelector((state) => state.busca.status);
+  const errorBusca = useSelector((state) => state.busca.error);
   const profissionais = useSelector(selectAllProfissionais);
   
-  // Seletores do estado de interações (agendamento, feedback, etc.)
-  const { agendados, avaliacoes, datasAgendamento, comentarios, feedbacksVisiveis, notificacao, hoverEstrela } 
-  = useSelector((state) => state.profissionais);
+  // Estado do calendário (do slice simplificado)
+  const { datasAgendamento } = useSelector((state) => state.profissionais);
+  
+  // NOVO: Estado dos serviços já contratados para saber o status de agendamento
+  const servicosContratados = useSelector(selectAllServicos);
+  const statusServicos = useSelector(state => state.servicosContratados.status);
+  const { actionStatus } = useSelector(state => state.servicosContratados);
 
+  
+  // --- LÓGICA DE BUSCA DE DADOS ---
+  
   useEffect(() => {
-    // Sempre que o 'tipoSelecionado' da URL existir, 
-    // disparamos a busca. Isso torna o componente autossuficiente.
-    // Removemos a dependência do `status`.
+    // Busca a lista de profissionais filtrados quando a página carrega
     if (tipoSelecionado) {
       dispatch(fetchProfissionais(tipoSelecionado));
     }
-    // A dependência agora é apenas no 'tipoSelecionado' e no 'dispatch'.
-  }, [tipoSelecionado, dispatch]);
-
-  useEffect(() => {
-    if (notificacao) {
-      const timer = setTimeout(() => dispatch(limparNotificacao()), 2000); // Aumentei o tempo
-      return () => clearTimeout(timer);
+    // Busca o histórico de serviços para saber quais profissionais já foram agendados
+    if (statusServicos === 'idle') {
+        dispatch(fetchServicos());
     }
-  }, [notificacao, dispatch]);
+  }, [tipoSelecionado, statusServicos, dispatch]);
 
   const getDataMinima = () => new Date().toISOString().split("T")[0];
   
-  if (status === "loading") return <p className="text-center mt-5">Carregando profissionais...</p>;
-  if (status === "failed") return <p className="text-center mt-5 alert alert-danger">Erro: {error}</p>;
-  if (status !== "succeeded" || profissionais.length === 0) {
+  // --- RENDERIZAÇÃO DE STATUS ---
+
+  if (statusBusca === "loading") return <p className="text-center mt-5">Carregando profissionais...</p>;
+  if (statusBusca === "failed") return <p className="text-center mt-5 alert alert-danger">Erro: {errorBusca}</p>;
+  if (statusBusca !== "succeeded" || profissionais.length === 0) {
       return (
         <div className="text-center mt-5">
             <h1>Nenhum profissional encontrado</h1>
@@ -90,95 +74,92 @@ const ProfsFiltrados = () => {
       )
   }
 
+  // --- COMPONENTE PRINCIPAL ---
   return (
     <div className={styles.container2}>
-      <Notificacao notificacao={notificacao} onClear={() => dispatch(limparNotificacao())} />
       <h1 className="mb-4">Profissionais de {tipoSelecionado}</h1>
       
-      {profissionais.map((prof) => (
-        <div key={prof.id} className={`card mb-4 ${styles.profissionalCard}`}>
-          <div className="card-body">
-            <h2 className="card-title">
-              <Link to={`/profissional/${prof.id}`} className={styles.nomeProfissional}>
-                {prof.nome}
-              </Link>
-            </h2>
-            <p className="card-text text-muted">{prof.descricao}</p>
-            <div className="d-flex justify-content-between mb-2">
-              <strong>Preço: R$ {prof.preco?.toFixed(2)}</strong>
-              <span>Distância: {prof.distancia} km</span>
-            </div>
-
-            <div className="d-flex align-items-center mb-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <span key={i} className={cx(styles.estrela, { [styles.selecionada]: i <= Math.round(prof.estrelas) })}>★</span>
-              ))}
-              <span className="ms-2">({prof.estrelas?.toFixed(1)})</span>
-            </div>
-            <div className="d-flex align-items-center mb-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <span key={i} className={cx(styles.estrela, { [styles.selecionada]: i <= Math.round(prof.estrelas) })}>★</span>
-              ))}
-              <span className="ms-2">({prof.estrelas.toFixed(1)})</span>
-            </div>
-
-            <div className="d-flex flex-wrap gap-2 align-items-center mb-3">
-              <input
-                type="date"
-                className="form-control"
-                style={{width: 'auto'}}
-                min={getDataMinima()}
-                value={datasAgendamento[prof.id] || ""}
-                onChange={(e) => dispatch(setDataAgendamento({ id: prof.id, data: e.target.value }))}
-              />
-             <button 
-                 className="btn btn-success" 
-                  onClick={() => {
-               const dataAgendamento = datasAgendamento[prof.id];
-              if (dataAgendamento) {
-               dispatch(contratarServico({ profissional: prof, dataAgendamento }));
-               // Você pode querer desabilitar o botão aqui ou mostrar uma mensagem
-                } else {
-                   alert('Por favor, selecione uma data para o agendamento.');
-                 }}}>
-                Agendar
-              </button>
-              <button
-                className="btn btn-danger"
-                onClick={() => dispatch(cancelarAgendamento(prof.id))}
-                disabled={!agendados[prof.id]}
-              >
-                Cancelar
-              </button>
-            </div>
+      { profissionais.map((prof) => {
+            const agendamentoExistente = servicosContratados.find(s => s.profissionalId === prof.id);
             
-            {agendados[prof.id] && (
-               <button className="btn btn-outline-primary btn-sm mb-3" onClick={() => dispatch(setFeedbackVisivel({ id: prof.id, visivel: !feedbacksVisiveis[prof.id] }))}>
-                 {feedbacksVisiveis[prof.id] ? 'Ocultar Feedback' : 'Deixar um Feedback'}
-               </button>
-            )}
+            // Verifica se uma ação está em andamento para este profissional específico
+            const isContratando = actionStatus.type === 'contratar' && actionStatus.profissionalId === prof.id && actionStatus.status === 'loading';
+            const isCancelando = actionStatus.type === 'cancelar' && actionStatus.servicoId === agendamentoExistente?.id && actionStatus.status === 'loading';
 
-            {agendados[prof.id] && feedbacksVisiveis[prof.id] && (
-              <div className={styles["feedback-area"]}>
-                <EstrelasAvaliacao profId={prof.id} dispatch={dispatch} hoverEstrela={hoverEstrela} avaliacoes={avaliacoes}/>
-                <textarea
-                  className="form-control mt-2"
-                  value={comentarios[prof.id] || ""}
-                  onChange={(e) => dispatch(enviarFeedbackProfissional({ id: prof.id, comentario: e.target.value, somenteTexto: true }))}
-                  rows={3}
-                  placeholder="Deixe seu comentário"
-                />
-                <button
-                  className={`btn btn-primary mt-2 ${styles.feedbackButton}`}
-                  onClick={() => dispatch(enviarFeedbackProfissional({ id: prof.id }))}
-                >
-                  Enviar Feedback
-                </button>
+        return (
+          <div key={prof.id} className={`card mb-4 ${styles.profissionalCard}`}>
+            <div className="card-body">
+              <h2 className="card-title">
+                <Link to={`/profissional/${prof.id}`} className={styles.nomeProfissional}>
+                  {prof.nome}
+                </Link>
+              </h2>
+              <p className="card-text text-muted">{prof.descricao}</p>
+              <div className="d-flex justify-content-between mb-2">
+                <strong>Preço: R$ {prof.preco?.toFixed(2)}</strong>
+                <span>Distância: {prof.distancia} km</span>
               </div>
-            )}
+              <div className="d-flex align-items-center mb-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <span key={i} className={cx(styles.estrela, { [styles.selecionada]: i <= Math.round(prof.estrelas) })}>★</span>
+                ))}
+                <span className="ms-2">({prof.estrelas?.toFixed(1)})</span>
+              </div>
+
+              {/* LÓGICA CONDICIONAL PARA AGENDAMENTO */}
+              <div className="d-flex flex-wrap gap-2 align-items-center mt-3 p-3 border rounded bg-light">
+                {agendamentoExistente ? (
+                  // SE JÁ FOI AGENDADO, mostra a data e o botão de CANCELAR
+                  <>
+                    <div className="flex-grow-1">
+                      <p className="mb-0">
+                        <strong>Agendado para:</strong> {new Date(agendamentoExistente.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                      </p>
+                      <small className="text-muted">Para avaliar, acesse seu Histórico.</small>
+                    </div>
+                    <button 
+                    className="btn btn-danger"
+                    onClick={() => dispatch(cancelarServico(agendamentoExistente.id))}
+                    disabled={isCancelando} // Desabilita enquanto cancela
+                      >
+                    {isCancelando ? 'Cancelando...' : 'Cancelar Agendamento'}
+                    </button>
+                  </>
+                ) : (
+                  // SE NÃO FOI AGENDADO, mostra o calendário e o botão de AGENDAR
+                  <>
+                    <input
+                      type="date"
+                      className="form-control"
+                      style={{width: 'auto'}}
+                      min={getDataMinima()}
+                      value={datasAgendamento[prof.id] || ""}
+                      onChange={(e) => dispatch(setDataAgendamento({ id: prof.id, data: e.target.value }))}
+                    />
+                    <button 
+    className="btn btn-success" 
+    // O 'onClick' agora só tem a lógica de clique
+    onClick={() => {
+        const dataAgendamento = datasAgendamento[prof.id];
+        if (dataAgendamento) {
+            dispatch(contratarServico({ profissional: prof, dataAgendamento }));
+        } else {
+            alert('Por favor, selecione uma data para o agendamento.');
+        }
+    }}
+    // 1. O 'disabled' foi movido para fora, como uma propriedade do botão
+    disabled={isContratando} 
+>
+    {/* 2. O texto duplicado foi removido, deixando apenas a lógica condicional */}
+    {isContratando ? 'Agendando...' : 'Agendar'}
+                </button>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

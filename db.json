@@ -46,26 +46,5 @@
       "distancia": 9
     }
   ],
-
-    "servicos": [
-    {
-      "id": 1,
-      "icon": "tools",
-      "nome": "Manutenção do Site",
-      "tipo": "Web",
-      "avaliacaoGeral": "4.8",
-      "data": "2025-04-10T03:00:00.000Z",
-      "avaliacao": "Serviço excelente, muito profissional e rápido. Recomendo!"
-    },
-    {
-      "id": 2,
-      "icon": "phone",
-      "nome": "Suporte Técnico",
-      "tipo": "TI",
-      "avaliacaoGeral": "4.5",
-      "data": "2025-03-22T03:00:00.000Z",
-      "avaliacao": "Ajuda muito rápida e eficiente, resolveram todos os meus problemas."
-    }
-  ]
-
+  "serviços":[]
 }
