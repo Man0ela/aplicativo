@@ -2,7 +2,7 @@ import React from "react";
 import cx from 'classnames';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { setTipoServico } from './features/buscaSlice.jsx'; 
+import { setTipoServico , fetchProfissionais} from './features/buscaSlice.jsx'; 
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./css/style3.module.css";
 
@@ -18,9 +18,15 @@ function TelaBusca() {
   };
 
   const buscarProfissionais = () => {
-    if (tipoServico.trim() === "") return alert("Digite o tipo de serviço.");
-    navigate(`/profs-filtrados?tipo=${encodeURIComponent(tipoServico)}`);
-  };
+  if (tipoServico.trim() === "") {
+    return alert("Digite o tipo de serviço.")
+  }
+  // despacha a thunk
+  dispatch(fetchProfissionais(tipoServico))
+    .unwrap()
+    .then(() => navigate(`/profs-filtrados?tipo=${encodeURIComponent(tipoServico)}`))
+    .catch(err => alert(`Erro: ${err}`))
+}
 
   return (
     <>

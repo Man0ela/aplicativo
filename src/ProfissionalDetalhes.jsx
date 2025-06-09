@@ -64,10 +64,10 @@ function ProfissionalDetalhes() {
     const dataSelecionada = new Date(datasAgendamento[profId]);
     if (!datasAgendamento[profId]) {
       dispatch(limparNotificacao());
-      return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Selecione uma data.' }));
+      return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Selecione uma data.' }));
     }
     if (dataSelecionada < hoje) {
-      return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Data inválida.' }));
+      return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Data inválida.' }));
     }
     dispatch(agendarProfissional({ id: profId, data: datasAgendamento[profId] }));
   };
@@ -78,11 +78,11 @@ function ProfissionalDetalhes() {
 
   const handleEnviarFeedback = () => {
     if (!agendados[profId]) {
-    return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Agende um horário antes de enviar feedback.' }));
+    return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Agende um horário antes de enviar feedback.' }));
     }
     
       if (comentarioLocal.trim() === '' || !notaSelecionada[profId]) {
-    return dispatch(limparNotificacao({ tipo: 'erro', mensagem: 'Preencha comentário e nota.' }));
+    return dispatch(setNotificacao({ tipo: 'erro', mensagem: 'Preencha comentário e nota.' }));
       }
     dispatch(enviarFeedbackProfissional({ id: profId, comentario: comentarioLocal }));
     setComentarioLocal('');

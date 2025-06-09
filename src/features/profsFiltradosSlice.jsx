@@ -33,6 +33,10 @@ const profissionaisSlice = createSlice({
         mensagem: `Agendamento confirmado para ${escolhida.toLocaleDateString('pt-BR')}`
       };
     },
+    setFeedbackVisivel: (state, action) => {
+    const { id, visivel } = action.payload;
+    state.feedbacksVisiveis[id] = visivel;
+       },
     cancelarAgendamento: (state, action) => {
       const id = action.payload;
       delete state.agendados[id];
@@ -87,7 +91,8 @@ export const {
   setDataAgendamento,
   selecionarEstrela,
   enviarFeedbackProfissional,
-  limparNotificacao
+  limparNotificacao,
+  setFeedbackVisivel
 } = profissionaisSlice.actions;
 
 export default profissionaisSlice.reducer;

@@ -1,4 +1,6 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation} from "react-router-dom";
+import { Provider } from 'react-redux';
+import { store } from './store';
 import TelaInicial from "./TelaInicial";
 import TelaBusca from "./TelaBusca";
 import ProfsFiltrados from "./ProfsFiltrados";
@@ -26,6 +28,7 @@ function App() {
       {!isLoginPage && <Header />}
 
       <main style={{ flex: 1 }}>
+        <Provider store={store}>
         <Routes>
           <Route path="/" element={<Login />} />
 
@@ -43,6 +46,7 @@ function App() {
           {/* Redirecionamento para login em rotas não reconhecidas */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Provider>
       </main>
 
       {/* Só mostra Footer se não estiver na tela de login */}

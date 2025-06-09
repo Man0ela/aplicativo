@@ -1,0 +1,49 @@
+{
+  "profissionais": [
+    {
+      "id": 1,
+      "nome": "João Silva",
+      "tipo": "Encanador",
+      "estrelas": 4,
+      "descricao": "Com mais de 10 anos de experiência...",
+      "preco": 150,
+      "distancia": 30
+    },
+    {
+      "id": 2,
+      "nome": "Maria Souza",
+      "tipo": "Eletricista",
+      "estrelas": 5,
+      "descricao": "Maria Souza é uma eletricista qualificada...",
+      "preco": 200,
+      "distancia": 20
+    },
+    {
+      "id": 3,
+      "nome": "Carlos Santos",
+      "tipo": "Pedreiro",
+      "estrelas": 3,
+      "descricao": "Carlos Santos oferece serviços de alvenaria...",
+      "preco": 180,
+      "distancia": 15
+    },
+    {
+      "id": 4,
+      "nome": "Ana - Faxineira",
+      "tipo": "Faxineira",
+      "estrelas": 4.6,
+      "descricao": "Ana oferece serviços de faxina profunda...",
+      "preco": 110,
+      "distancia": 6
+    },
+    {
+      "id": 5,
+      "nome": "Pedro - Jardineiro",
+      "tipo": "Jardineiro",
+      "estrelas": 4.1,
+      "descricao": "Pedro é especialista em jardinagem...",
+      "preco": 140,
+      "distancia": 9
+    }
+  ]
+}

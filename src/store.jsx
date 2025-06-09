@@ -21,7 +21,6 @@ export const store = configureStore({
     header: headerReducer,
     sobreNos: SobreNosReducer,
     servicosContratados: ServicosReducer,
-
     dashboardProfissional:dashboardProfissionalReducer,
   }
 });
