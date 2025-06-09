@@ -46,5 +46,16 @@
       "distancia": 9
     }
   ],
-  "serviços":[]
+  "servicos": [
+    {
+      "id": "1847",
+      "nome": "João Silva",
+      "tipo": "Encanador",
+      "profissionalId": "1",
+      "data": "2025-06-27",
+      "avaliacao": "jjjjj",
+      "avaliacaoGeral": "4",
+      "icon": "calendar-check"
+    }
+  ]
 }

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setActiveNavLink } from './features/headerSlice';
@@ -10,7 +9,7 @@ export default function Header() {
 
   const handleLogoClick = () => {
     navigate('/');
-    dispatch(setActiveNavLink('')); // desativa link ativo ao clicar no logo, opcional
+    dispatch(setActiveNavLink('')); 
   };
 
   const handleNavClick = (label, to) => {
