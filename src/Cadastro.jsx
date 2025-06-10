@@ -6,7 +6,6 @@ function Cadastro() {
     nome: "",
     email: "",
     senha: "",
-    // Campos específicos para profissionais
     especialidade: "",
     preco: "",
     descricaoServico: "",
@@ -23,7 +22,6 @@ function Cadastro() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aqui você enviaria os dados para o backend
     console.log("Dados enviados:", dados);
   };
 
