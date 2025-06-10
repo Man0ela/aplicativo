@@ -1,10 +1,11 @@
-import { Routes, Route, Navigate, useLocation} from "react-router-dom";
-import { Provider } from 'react-redux';
-import { store } from './store';
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./store";
 import TelaInicial from "./TelaInicial";
 import TelaBusca from "./TelaBusca";
 import ProfsFiltrados from "./ProfsFiltrados";
 import ProfissionalDetalhes from "./ProfissionalDetalhes";
+import Cadastro from "./Cadastro";
 import SobreNos from "./SobreNos";
 import ServicosContratados from "./ServicosContratados";
 import Header from "./Header";
@@ -20,32 +21,42 @@ function App() {
   const location = useLocation();
 
   // Aqui a condição que verifica se está na tela de login
-  const isLoginPage = location.pathname === '/';
+  const isLoginPage = location.pathname === "/";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+    >
       {/* Só mostra Header se não estiver na tela de login */}
       {!isLoginPage && <Header />}
 
       <main style={{ flex: 1 }}>
         <Provider store={store}>
-        <Routes>
-          <Route path="/" element={<Login />} />
+          <Routes>
+            <Route path="/" element={<Cadastro />} />
 
-          {/* Rotas para usuário cliente */}
-          <Route path="/inicial" element={<TelaInicial />} />
-          <Route path="/buscar" element={<TelaBusca />} />
-          <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
-          <Route path="/profissional/:id" element={<ProfissionalDetalhes />} />
-          <Route path="/historico" element={<ServicosContratados />} />
-          <Route path="/sobre-nos" element={<SobreNos />} />
+            {/* Rotas para usuário cliente */}
+            <Route path="/inicial" element={<TelaInicial />} />
+            <Route path="/cadastro" element={<Cadastro />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/buscar" element={<TelaBusca />} />
+            <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
+            <Route
+              path="/profissional/:id"
+              element={<ProfissionalDetalhes />}
+            />
+            <Route path="/historico" element={<ServicosContratados />} />
+            <Route path="/sobre-nos" element={<SobreNos />} />
 
-          {/* Dashboard para profissional */}
-          <Route path="/dashboard-profissional" element={<DashboardProfissional />} />
+            {/* Dashboard para profissional */}
+            <Route
+              path="/dashboard-profissional"
+              element={<DashboardProfissional />}
+            />
 
-          {/* Redirecionamento para login em rotas não reconhecidas */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            {/* Redirecionamento para login em rotas não reconhecidas */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </Provider>
       </main>
 
@@ -56,4 +67,3 @@ function App() {
 }
 
 export default App;
-
