@@ -82,9 +82,9 @@ export const enviarAvaliacao = createAsyncThunk(
 
 // O estado inicial agora usa o adapter e controla status da API.
 const initialState = servicesAdapter.getInitialState({
-    status: 'idle', // idle | loading | succeeded | failed
+    status: 'idle', 
     error: null,
-    avaliacoesVisiveis: {} ,// Mantemos o estado da UI
+    avaliacoesVisiveis: {} ,
     actionStatus: { type: null, servicoId: null, status: 'idle' } 
 });
 
@@ -92,7 +92,7 @@ const servicosContratadosSlice = createSlice({
     name: 'servicosContratados',
     initialState,
     reducers: {
-        // A lógica de UI permanece a mesma.
+
         toggleAvaliacaoVisivel: (state, action) => {
             const id = action.payload;
             state.avaliacoesVisiveis[id] = !state.avaliacoesVisiveis[id];
@@ -155,7 +155,7 @@ const servicosContratadosSlice = createSlice({
 
 export const { toggleAvaliacaoVisivel, clearServicosError,  resetActionStatus} = servicosContratadosSlice.actions;
 
-// 4. Exporta os seletores gerados pelo adapter.
+// Exporta os seletores gerados pelo adapter.
 export const {
     selectAll: selectAllServicos,
     selectById: selectServicoById,

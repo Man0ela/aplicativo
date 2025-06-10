@@ -10,7 +10,7 @@ function ProfissionalDetalhes() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Seletores simplificados para pegar os dados do novo estado
+  
   const { profissional, status, error } = useSelector(
     (state) => state.profdetalhes
   );
@@ -48,7 +48,7 @@ function ProfissionalDetalhes() {
     return null; // ou uma tela de "Selecione um profissional"
   }
 
-  // --- Card de Perfil ---
+ 
   return (
     <div className="container mt-5 d-flex justify-content-center">
       <div

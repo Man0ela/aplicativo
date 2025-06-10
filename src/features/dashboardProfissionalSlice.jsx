@@ -14,7 +14,7 @@ const dashboardProfissionalSlice = createSlice({
   name: 'dashboardProfissional',
   initialState,
   reducers: {
-    // Aqui você pode adicionar reducers para atualizar histórico e solicitações, se precisar
+
   },
 });
 

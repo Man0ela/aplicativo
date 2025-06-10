@@ -20,7 +20,7 @@ function TelaInicial() {
 
   return (
     <div className="page-container">
-      {/* Mensagem de boas‑vindas */}
+     
       {showWelcomeMessage && (
         <div className="alert alert-info d-flex justify-content-between align-items-center">
           <div>Bem‑vindo ao GetService! Clique nos botões abaixo para começar.</div>
@@ -67,7 +67,6 @@ function TelaInicial() {
                 Saiba mais
               </button>
             </div>
-            {/* Exibe a última ação */}
             {lastButtonClicked && (
               <p className="mt-4 text-muted">
                 Última ação: <strong>{lastButtonClicked}</strong>

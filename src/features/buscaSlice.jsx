@@ -1,23 +1,20 @@
 import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 
-// O adapter ajuda a gerenciar a lista de profissionais de forma eficiente.
+
 const professionalsAdapter = createEntityAdapter();
 
-//
-// AQUI ESTÁ A CORREÇÃO PRINCIPAL
-//
+
 export const fetchProfissionais = createAsyncThunk(
   'busca/fetchProfissionais',
-  // 1. A função agora aceita 'tipoServico' como argumento.
+  
   async (tipoServico, { rejectWithValue }) => {
     
-    // 2. Se o termo de busca não for uma string válida, retorna uma lista vazia para evitar erros.
+    
     if (typeof tipoServico !== 'string' || tipoServico.trim() === '') {
       return []; 
     }
 
-    // 3. O 'tipoServico' é adicionado à URL para que o json-server filtre os dados.
-    // O `tipo_like` faz uma busca por texto no campo "tipo" do seu db.json.
+    
     const url = `http://localhost:3001/profissionais?tipo_like=${encodeURIComponent(tipoServico)}`;
     
     try {
@@ -27,7 +24,7 @@ export const fetchProfissionais = createAsyncThunk(
       }
       const data = await response.json();
       
-      // Se a API retorna uma lista vazia, informamos ao usuário.
+      
       if (data.length === 0) {
         return rejectWithValue(`Nenhum profissional encontrado para "${tipoServico}".`);
       }
@@ -43,7 +40,7 @@ const buscaSlice = createSlice({
   name: 'busca',
   initialState: professionalsAdapter.getInitialState({
     tipoServico: '',
-    status: 'idle', // idle | loading | succeeded | failed
+    status: 'idle', 
     error: null,
   }),
   reducers: {

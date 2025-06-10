@@ -29,7 +29,6 @@ function Cadastro() {
     <div className="container mt-5" style={{ maxWidth: "600px" }}>
       <h2 className="text-center mb-4">Cadastro</h2>
       <form onSubmit={handleSubmit}>
-        {/* Campos básicos para todos os usuários */}
         <div className="mb-3">
           <label className="form-label">Nome Completo</label>
           <input
@@ -80,7 +79,7 @@ function Cadastro() {
           </select>
         </div>
 
-        {/* Campos condicionais para profissionais */}
+        
         {tipoUsuario === "profissional" && (
           <>
             <div className="mb-3">

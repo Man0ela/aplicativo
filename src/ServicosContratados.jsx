@@ -3,11 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { 
     selectAllServicos,
     fetchServicos,
-    enviarAvaliacao, // Importa a nova thunk de avaliação
+    enviarAvaliacao, 
     toggleAvaliacaoVisivel
 } from './features/servicosSlice';
 
-// Pequeno componente para o formulário de avaliação
+
 const FormularioAvaliacao = ({ servicoId }) => {
     const dispatch = useDispatch();
     const [nota, setNota] = useState(5);
@@ -77,7 +77,7 @@ const ServicosContratados = () => {
                                         <button className="btn btn-primary btn-sm" onClick={() => setServicoParaAvaliar(servico.id)}>
                                             Avaliar Serviço
                                         </button>
-                                        {/* Mostra o formulário se este for o serviço selecionado */}
+                        
                                         {servicoParaAvaliar === servico.id && <FormularioAvaliacao servicoId={servico.id} />}
                                     </div>
                                 )}

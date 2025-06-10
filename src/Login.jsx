@@ -11,7 +11,6 @@ function Login() {
       return;
     }
 
-    // Redireciona conforme a seleção
     if (tipoUsuario === "cliente") {
       navigate("/inicial");
     } else if (tipoUsuario === "profissional") {
