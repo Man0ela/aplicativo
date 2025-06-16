@@ -1,15 +1,15 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { setActiveNavLink } from './features/headerSlice';
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setActiveNavLink } from "./features/headerSlice";
 
 export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { logoText, navLinks } = useSelector(state => state.header);
+  const { logoText, navLinks } = useSelector((state) => state.header);
 
   const handleLogoClick = () => {
-    navigate('/');
-    dispatch(setActiveNavLink('')); 
+    navigate("/login");
+    dispatch(setActiveNavLink(""));
   };
 
   const handleNavClick = (label, to) => {
@@ -19,15 +19,15 @@ export default function Header() {
 
   return (
     <header className="d-flex justify-content-between align-items-center p-3 border-bottom">
-      <button 
-        onClick={handleLogoClick} 
-        style={{ 
-          cursor: 'pointer', 
-          fontWeight: 'bold', 
-          fontSize: '1.5rem', 
-          background: 'none', 
-          border: 'none',
-          color: '#0d6efd'
+      <button
+        onClick={handleLogoClick}
+        style={{
+          cursor: "pointer",
+          fontWeight: "bold",
+          fontSize: "1.5rem",
+          background: "none",
+          border: "none",
+          color: "#0d6efd",
         }}
         aria-label="Voltar para tela inicial"
       >
@@ -38,18 +38,22 @@ export default function Header() {
         <ul className="nav">
           {navLinks.map(({ label, type, to, active }) => (
             <li key={label} className="nav-item">
-              {type === 'link' ? (
+              {type === "link" ? (
                 <button
                   onClick={() => handleNavClick(label, to)}
-                  className={`nav-link btn btn-link ${active ? 'active fw-bold' : ''}`}
-                  style={{ cursor: 'pointer' }}
+                  className={`nav-link btn btn-link ${
+                    active ? "active fw-bold" : ""
+                  }`}
+                  style={{ cursor: "pointer" }}
                 >
                   {label}
                 </button>
               ) : (
                 <button
                   onClick={() => handleNavClick(label)}
-                  className={`btn btn-primary ${active ? '' : 'btn-outline-primary'}`}
+                  className={`btn btn-primary ${
+                    active ? "" : "btn-outline-primary"
+                  }`}
                 >
                   {label}
                 </button>
