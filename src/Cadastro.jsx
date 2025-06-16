@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Cadastro() {
   const [tipoUsuario, setTipoUsuario] = useState("cliente");
@@ -12,6 +13,8 @@ function Cadastro() {
     distanciaAtendimento: "",
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setDados((prev) => ({
@@ -23,6 +26,7 @@ function Cadastro() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Dados enviados:", dados);
+    navigate("/login");
   };
 
   return (
@@ -79,7 +83,6 @@ function Cadastro() {
           </select>
         </div>
 
-        
         {tipoUsuario === "profissional" && (
           <>
             <div className="mb-3">
@@ -137,7 +140,11 @@ function Cadastro() {
           </>
         )}
 
-        <button type="submit" className="btn btn-primary w-100 mt-3">
+        <button
+          type="submit"
+          className="btn btn-primary w-100 mt-3"
+          onClick={handleSubmit}
+        >
           Cadastrar
         </button>
       </form>
