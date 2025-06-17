@@ -36,15 +36,19 @@ const FormularioAvaliacao = ({ servicoId }) => {
 const ServicosContratados = () => {
     const dispatch = useDispatch();
     
+    
+    const { user } = useSelector(state => state.auth); 
     const servicos = useSelector(selectAllServicos);
     const status = useSelector(state => state.servicosContratados.status);
     const [servicoParaAvaliar, setServicoParaAvaliar] = useState(null);
 
     useEffect(() => {
-        if (status === 'idle') {
+        // Nós buscamos os serviços sempre que o 'user' logado mudar.
+        // Se o usuário existir (não for null), disparamos a busca.
+        if (user) {
             dispatch(fetchServicos());
         }
-    }, [status, dispatch]);
+    }, [user, dispatch]); // <-- A DEPENDÊNCIA AGORA É O 'user'!
     
     if (status === 'loading') {
         return <div className="container my-4 text-center">Carregando histórico...</div>;
