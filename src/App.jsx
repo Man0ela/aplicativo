@@ -20,11 +20,8 @@ function App() {
   return (
     <Routes>
       {/* GRUPO 1: Rotas públicas que NÃO usam o layout principal */}
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
       <Route path="/cadastro" element={<Cadastro />} />
-      
-      
-      <Route path="/" element={<Navigate to="/cadastro" replace />} />
 
 
       {/* GRUPO 2: Rotas privadas/principais que USAM o layout com Header e Footer */}
