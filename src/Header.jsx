@@ -9,7 +9,7 @@ export default function Header() {
   const { logoText, navLinks } = useSelector((state) => state.header);
 
   const handleLogoClick = () => {
-    navigate('/');
+    navigate('/inicial');
     dispatch(setActiveNavLink(''));
   };
 
