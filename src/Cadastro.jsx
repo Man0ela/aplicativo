@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { registrarNovoUsuario } from "./features/usersSlice"; // Importa a thunk que criamos
 
 function Cadastro() {
   const [tipoUsuario, setTipoUsuario] = useState("cliente");
@@ -13,7 +15,11 @@ function Cadastro() {
     distanciaAtendimento: "",
   });
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  // Pega o status do slice para mostrar feedback ao usuário (ex: "Carregando...")
+  const { status, error } = useSelector(state => state.users);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,10 +29,18 @@ function Cadastro() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dados enviados:", dados);
-    navigate("/login");
+    try {
+      // Dispara a thunk com os dados do formulário para a API
+      await dispatch(registrarNovoUsuario({ tipoUsuario, dados })).unwrap();
+      
+      alert(`Cadastro como ${tipoUsuario} realizado com sucesso!`);
+      navigate("/login"); // Navega para o login após o sucesso
+    } catch (err) {
+      // Exibe o erro que veio do back-end ou da thunk
+      alert(`Falha no cadastro: ${err}`);
+    }
   };
 
   return (
@@ -86,7 +100,7 @@ function Cadastro() {
         {tipoUsuario === "profissional" && (
           <>
             <div className="mb-3">
-              <label className="form-label">Especialidade</label>
+              <label className="form-label">Especialidade (Ex: Faxineira, Encanador)</label>
               <input
                 type="text"
                 className="form-control"
@@ -143,10 +157,12 @@ function Cadastro() {
         <button
           type="submit"
           className="btn btn-primary w-100 mt-3"
-          onClick={handleSubmit}
+          disabled={status === 'loading'}
         >
-          Cadastrar
+          {status === 'loading' ? 'Cadastrando...' : 'Cadastrar'}
         </button>
+        
+        {status === 'failed' && <div className="alert alert-danger mt-3">{error}</div>}
       </form>
     </div>
   );

@@ -7,7 +7,7 @@ import footerReducer from "./features/footerSlice.jsx";
 import headerReducer from "./features/headerSlice.jsx";
 import SobreNosReducer from './features/sobrenosSlice.jsx';
 import ServicosReducer from './features/servicosSlice.jsx';
-
+import usersReducer from './features/usersSlice';
 import dashboardProfissionalReducer from './features/dashboardProfissionalSlice.jsx';
 
 // Configure a store com o slice
@@ -22,5 +22,6 @@ export const store = configureStore({
     sobreNos: SobreNosReducer,
     servicosContratados: ServicosReducer,
     dashboardProfissional:dashboardProfissionalReducer,
+    users:usersReducer,
   }
 });
