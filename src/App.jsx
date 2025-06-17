@@ -1,68 +1,46 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { Provider } from "react-redux";
-import { store } from "./store";
+import { Routes, Route, Navigate } from "react-router-dom";
+import MainLayout from "./mainLayout"; // Importa nosso novo layout
+
+// Importe todas as suas telas
+import Login from "./Login";
+import Cadastro from "./Cadastro";
 import TelaInicial from "./TelaInicial";
 import TelaBusca from "./TelaBusca";
 import ProfsFiltrados from "./ProfsFiltrados";
 import ProfissionalDetalhes from "./ProfissionalDetalhes";
-import Cadastro from "./Cadastro";
-import SobreNos from "./SobreNos";
 import ServicosContratados from "./ServicosContratados";
-import Header from "./Header";
-import Footer from "./Footer";
-import Login from "./Login";
+import SobreNos from "./SobreNos";
 import DashboardProfissional from "./DashboardProfissional";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-//npx json-server --watch db.json --port 3001
+
 function App() {
-  const location = useLocation();
-
-  // Aqui a condição que verifica se está na tela de login
-  const isLoginPage = location.pathname === "/";
-
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-    >
-      {/* Só mostra Header se não estiver na tela de login */}
-      {!isLoginPage && <Header />}
+    <Routes>
+      {/* GRUPO 1: Rotas públicas que NÃO usam o layout principal */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/cadastro" element={<Cadastro />} />
+      
+      
+      <Route path="/" element={<Navigate to="/cadastro" replace />} />
 
-      <main style={{ flex: 1 }}>
-        <Provider store={store}>
-          <Routes>
-            <Route path="/" element={<Cadastro />} />
 
-            {/* Rotas para usuário cliente */}
-            <Route path="/inicial" element={<TelaInicial />} />
-            <Route path="/cadastro" element={<Cadastro />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/buscar" element={<TelaBusca />} />
-            <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
-            <Route
-              path="/profissional/:id"
-              element={<ProfissionalDetalhes />}
-            />
-            <Route path="/historico" element={<ServicosContratados />} />
-            <Route path="/sobre-nos" element={<SobreNos />} />
+      {/* GRUPO 2: Rotas privadas/principais que USAM o layout com Header e Footer */}
+      <Route element={<MainLayout />}>
+        <Route path="/inicial" element={<TelaInicial />} />
+        <Route path="/buscar" element={<TelaBusca />} />
+        <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
+        <Route path="/profissional/:id" element={<ProfissionalDetalhes />} />
+        <Route path="/historico" element={<ServicosContratados />} />
+        <Route path="/sobre-nos" element={<SobreNos />} />
+        <Route path="/dashboard-profissional" element={<DashboardProfissional />} />
+      </Route>
 
-            {/* Dashboard para profissional */}
-            <Route
-              path="/dashboard-profissional"
-              element={<DashboardProfissional />}
-            />
-
-            {/* Redirecionamento para login em rotas não reconhecidas */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Provider>
-      </main>
-
-      {/* Só mostra Footer se não estiver na tela de login */}
-      {!isLoginPage && <Footer />}
-    </div>
+      {/* Qualquer outra rota não encontrada pode redirecionar para o login também */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
 

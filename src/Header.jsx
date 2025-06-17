@@ -1,6 +1,7 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { setActiveNavLink } from "./features/headerSlice";
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { setActiveNavLink } from './features/headerSlice';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -8,8 +9,8 @@ export default function Header() {
   const { logoText, navLinks } = useSelector((state) => state.header);
 
   const handleLogoClick = () => {
-    navigate("/login");
-    dispatch(setActiveNavLink(""));
+    navigate('/');
+    dispatch(setActiveNavLink(''));
   };
 
   const handleNavClick = (label, to) => {
@@ -49,8 +50,9 @@ export default function Header() {
                   {label}
                 </button>
               ) : (
+                // para type: 'button'
                 <button
-                  onClick={() => handleNavClick(label)}
+                  onClick={() => handleNavClick(label, to)}
                   className={`btn btn-primary ${
                     active ? "" : "btn-outline-primary"
                   }`}

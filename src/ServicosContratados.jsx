@@ -62,7 +62,7 @@ const ServicosContratados = () => {
                                     <i className={`bi bi-${servico.icon} me-2`} style={{ fontSize: '1.5rem' }}></i>
                                     <h5 className="card-title mb-0">{servico.nome}</h5>
                                 </div>
-                                <p className="card-text"><strong>Data:</strong> {new Date(servico.data).toLocaleDateString()}</p>
+                               <p className="card-text"><strong>Data:</strong> {new Date(servico.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
                                 
                                 {servico.avaliacao ? (
                                     // Se JÁ EXISTE avaliação, mostra

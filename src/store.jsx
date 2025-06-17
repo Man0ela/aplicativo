@@ -9,7 +9,7 @@ import SobreNosReducer from './features/sobrenosSlice.jsx';
 import ServicosReducer from './features/servicosSlice.jsx';
 import usersReducer from './features/usersSlice';
 import dashboardProfissionalReducer from './features/dashboardProfissionalSlice.jsx';
-
+import authReducer from './features/authSlice';
 // Configure a store com o slice
 export const store = configureStore({
   reducer: {
@@ -23,5 +23,6 @@ export const store = configureStore({
     servicosContratados: ServicosReducer,
     dashboardProfissional:dashboardProfissionalReducer,
     users:usersReducer,
+    auth:authReducer,
   }
 });

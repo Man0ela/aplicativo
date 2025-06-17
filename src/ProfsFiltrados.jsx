@@ -59,7 +59,9 @@ const ProfsFiltrados = () => {
   
 
   if (statusBusca === "loading") return <p className="text-center mt-5">Carregando profissionais...</p>;
-  if (statusBusca === "failed") return <p className="text-center mt-5 alert alert-danger">Erro: {errorBusca}</p>;
+  // Verifique se 'error' existe e então acesse a propriedade 'message'
+if (statusBusca === 'failed') return <p className="text-center mt-5 alert alert-danger">Erro: {error.message || error}</p>;
+
   if (statusBusca !== "succeeded" || profissionais.length === 0) {
       return (
         <div className="text-center mt-5">
@@ -76,8 +78,7 @@ const ProfsFiltrados = () => {
       <h1 className="mb-4">Profissionais de {tipoSelecionado}</h1>
       
       { profissionais.map((prof) => {
-            const agendamentoExistente = servicosContratados.find(s => s.profissionalId === prof.id);
-            
+            const agendamentoExistente = servicosContratados.find(s => s.profissionalId === prof.id && s.avaliacao === null);
             
             const isContratando = actionStatus.type === 'contratar' && actionStatus.profissionalId === prof.id && actionStatus.status === 'loading';
             const isCancelando = actionStatus.type === 'cancelar' && actionStatus.servicoId === agendamentoExistente?.id && actionStatus.status === 'loading';
