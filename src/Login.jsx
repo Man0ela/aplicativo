@@ -1,46 +1,60 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "./features/authSlice";
 
 function Login() {
-  const [tipoUsuario, setTipoUsuario] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [tipoUsuario, setTipoUsuario] = useState("cliente");
+  
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { status, error } = useSelector(state => state.auth);
 
-  const handleLogin = () => {
-    if (!tipoUsuario) {
-      alert("Selecione um tipo de usuário");
-      return;
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const userData = await dispatch(loginUser({ email, senha, tipoUsuario })).unwrap();
 
-    if (tipoUsuario === "cliente") {
-      navigate("/inicial");
-    } else if (tipoUsuario === "profissional") {
-      navigate("/dashboard-profissional");
+        // Redireciona com base no tipo de usuário retornado
+        if (userData.user.tipo === "cliente") {
+            navigate("/inicial");
+        } else if (userData.user.tipo === "profissional") {
+            navigate("/dashboard-profissional");
+        }
+    } catch (err) {
+        // O erro já vem tratado da thunk
+        alert(`Falha no login: ${err}`);
     }
   };
 
   return (
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <h2 className="text-center mb-4">Login</h2>
-
-      <div className="mb-3">
-        <label className="form-label">Tipo de Usuário</label>
-        <select
-          className="form-select"
-          value={tipoUsuario}
-          onChange={(e) => setTipoUsuario(e.target.value)}
-        >
-          <option value="">Selecione</option>
-          <option value="cliente">Cliente</option>
-          <option value="profissional">Profissional</option>
-        </select>
-      </div>
-
-      <button className="btn btn-primary w-100" onClick={handleLogin}>
-        Acessar
-      </button>
-
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label">Email</label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Senha</label>
+          <input type="password" value={senha} onChange={e => setSenha(e.target.value)} className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Eu sou</label>
+          <select value={tipoUsuario} onChange={e => setTipoUsuario(e.target.value)} className="form-select">
+            <option value="cliente">Cliente</option>
+            <option value="profissional">Profissional</option>
+          </select>
+        </div>
+        <button type="submit" className="btn btn-primary w-100" disabled={status === 'loading'}>
+          {status === 'loading' ? 'Entrando...' : 'Acessar'}
+        </button>
+        {error && <div className="alert alert-danger mt-3">{error}</div>}
+      </form>
       <div className="mt-3 text-center">
-        Não tem conta? <a href="/cadastro">Cadastre-se</a>
+        Não tem conta? <Link to="/cadastro">Cadastre-se</Link>
       </div>
     </div>
   );
