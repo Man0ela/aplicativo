@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./mainLayout"; // Importa nosso novo layout
 
-// Importe todas as suas telas
+
 import Login from "./Login";
 import Cadastro from "./Cadastro";
 import TelaInicial from "./TelaInicial";
@@ -19,12 +19,12 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 function App() {
   return (
     <Routes>
-      {/* GRUPO 1: Rotas públicas que NÃO usam o layout principal */}
+      
       <Route path="/" element={<Login />} />
       <Route path="/cadastro" element={<Cadastro />} />
 
 
-      {/* GRUPO 2: Rotas privadas/principais que USAM o layout com Header e Footer */}
+      {/* Rotas privadas/principais que USAM o layout com Header e Footer */}
       <Route element={<MainLayout />}>
         <Route path="/inicial" element={<TelaInicial />} />
         <Route path="/buscar" element={<TelaBusca />} />

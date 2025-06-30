@@ -45,7 +45,7 @@ function ProfissionalDetalhes() {
   }
 
   if (!profissional) {
-    return null; // ou uma tela de "Selecione um profissional"
+    return null; 
   }
 
  

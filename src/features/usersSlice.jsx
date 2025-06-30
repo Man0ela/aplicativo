@@ -11,7 +11,7 @@ export const registrarNovoUsuario = createAsyncThunk(
 
             // Prepara o endpoint e o payload corretos dependendo do tipo de usuário
             if (tipoUsuario === 'profissional') {
-                // CORREÇÃO: A porta correta do seu back-end Express é 3000
+               
                 endpoint = 'http://localhost:3001/profissionais';
                 
                 // Mapeia os nomes dos campos do formulário para os nomes do seu Model no back-end
@@ -26,7 +26,7 @@ export const registrarNovoUsuario = createAsyncThunk(
                     estrelas: 5
                 };
             } else {
-                // CORREÇÃO: A porta correta do seu back-end Express é 3000
+         
                 endpoint = 'http://localhost:3001/clientes';
                 payload = {
                     nome: dados.nome,

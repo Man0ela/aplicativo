@@ -50,7 +50,7 @@ export default function Header() {
                   {label}
                 </button>
               ) : (
-                // para type: 'button'
+                
                 <button
                   onClick={() => handleNavClick(label, to)}
                   className={`btn btn-primary ${

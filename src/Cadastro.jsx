@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { registrarNovoUsuario } from "./features/usersSlice"; // Importa a thunk que criamos
+import { registrarNovoUsuario } from "./features/usersSlice"; 
 
 function Cadastro() {
   const [tipoUsuario, setTipoUsuario] = useState("cliente");
