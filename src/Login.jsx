@@ -16,6 +16,7 @@ function Login() {
     try {
       // Envia só email e senha, sem tipoUsuario
       const userData = await dispatch(loginUser({ email, senha })).unwrap();
+      console.log('DADOS RECEBIDOS DO BACK-END:', userData);
 
       // Redireciona conforme o tipo retornado pelo backend
       if (userData.user.tipo === "cliente") {
