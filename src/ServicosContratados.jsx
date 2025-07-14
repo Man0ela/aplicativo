@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+// A importação de 'react-redux' está correta aqui
+import { useSelector, useDispatch } from 'react-redux'; 
 import { 
     selectAllServicos,
     fetchServicos,
-    enviarAvaliacao, 
-    toggleAvaliacaoVisivel
+    enviarAvaliacao,
+    cancelarServico // 1. Importamos a ação de cancelar que já existe no seu slice
 } from './features/servicosSlice';
 
-
-const FormularioAvaliacao = ({ servicoId }) => {
+// --- Componente do Formulário de Avaliação (com correção) ---
+// 2. Adicionamos a prop 'onAvaliacaoEnviada'
+const FormularioAvaliacao = ({ servicoId, onAvaliacaoEnviada }) => {
     const dispatch = useDispatch();
     const [nota, setNota] = useState(5);
     const [comentario, setComentario] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(enviarAvaliacao({ id: servicoId, avaliacao: comentario, nota }));
+        dispatch(enviarAvaliacao({ id: servicoId, avaliacao: comentario, nota: Number(nota) }));
+        
+        // 3. AVISO: Após enviar, chamamos a função para notificar o componente pai
+        onAvaliacaoEnviada(); 
     };
 
     return (
@@ -33,22 +38,23 @@ const FormularioAvaliacao = ({ servicoId }) => {
     );
 };
 
+
+// --- Componente Principal do Histórico (com correções) ---
 const ServicosContratados = () => {
     const dispatch = useDispatch();
-    
     
     const { user } = useSelector(state => state.auth); 
     const servicos = useSelector(selectAllServicos);
     const status = useSelector(state => state.servicosContratados.status);
+    const actionStatus = useSelector(state => state.servicosContratados.actionStatus);
+
     const [servicoParaAvaliar, setServicoParaAvaliar] = useState(null);
 
     useEffect(() => {
-        // Nós buscamos os serviços sempre que o 'user' logado mudar.
-        // Se o usuário existir (não for null), disparamos a busca.
         if (user) {
             dispatch(fetchServicos());
         }
-    }, [user, dispatch]); // <-- A DEPENDÊNCIA AGORA É O 'user'!
+    }, [user, dispatch]);
     
     if (status === 'loading') {
         return <div className="container my-4 text-center">Carregando histórico...</div>;
@@ -58,37 +64,60 @@ const ServicosContratados = () => {
         <div className="container my-4">
             <h2 className="mb-4">Histórico de Serviços</h2>
             <div className="row">
-                {servicos.map(servico => (
-                    <div className="col-md-6 col-lg-4 mb-4" key={servico.id}>
-                        <div className="card h-100">
-                            <div className="card-body">
-                                <div className="d-flex align-items-center mb-2">
-                                    <i className={`bi bi-${servico.icon} me-2`} style={{ fontSize: '1.5rem' }}></i>
-                                    <h5 className="card-title mb-0">{servico.nome}</h5>
+                {servicos.map(servico => {
+                    const isCanceling = actionStatus.type === 'cancelar' && 
+                                        actionStatus.status === 'loading' && 
+                                        actionStatus.servicoId === servico.id;
+
+                    return (
+                        <div className="col-md-6 col-lg-4 mb-4" key={servico.id}>
+                            <div className="card h-100">
+                                <div className="card-body d-flex flex-column">
+                                    <div className="d-flex align-items-center mb-2">
+                                        <i className={`bi bi-tools me-2`} style={{ fontSize: '1.5rem' }}></i>
+                                        <h5 className="card-title mb-0">{servico.nome}</h5>
+                                    </div>
+                                    <p className="card-text"><strong>Data:</strong> {new Date(servico.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
+                                    
+                                    <div className="mt-auto">
+                                        {servico.avaliacao ? (
+                                            // Se JÁ EXISTE avaliação, mostra os detalhes (nenhum botão)
+                                            <div>
+                                                <p className="card-text mb-1"><strong>Sua Avaliação:</strong> {servico.avaliacaoGeral} ★</p>
+                                                <p className="card-text fst-italic">"{servico.avaliacao}"</p>
+                                            </div>
+                                        ) : (
+                                            // Se NÃO EXISTE avaliação, mostra as opções de ação
+                                            <div>
+                                                {servicoParaAvaliar === servico.id ? (
+                                                    // 4. Passamos a função para o formulário
+                                                    <FormularioAvaliacao 
+                                                        servicoId={servico.id} 
+                                                        onAvaliacaoEnviada={() => setServicoParaAvaliar(null)}
+                                                    />
+                                                ) : (
+                                                    // Mostra os botões "Avaliar" e "Cancelar"
+                                                    <div className="d-flex gap-2">
+                                                        <button className="btn btn-primary btn-sm" onClick={() => setServicoParaAvaliar(servico.id)}>
+                                                            Avaliar
+                                                        </button>
+                                                        <button 
+                                                            className="btn btn-danger btn-sm" 
+                                                            onClick={() => dispatch(cancelarServico(servico.id))}
+                                                            disabled={isCanceling}
+                                                        >
+                                                            {isCanceling ? 'Cancelando...' : 'Cancelar'}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                               <p className="card-text"><strong>Data:</strong> {new Date(servico.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
-                                
-                                {servico.avaliacao ? (
-                                    // Se JÁ EXISTE avaliação, mostra
-                                    <div>
-                                        <p className="card-text mb-1"><strong>Sua Avaliação:</strong> {servico.avaliacaoGeral} ★</p>
-                                        <p className="card-text fst-italic">"{servico.avaliacao}"</p>
-                                    </div>
-                                ) : (
-                                    // Se NÃO EXISTE avaliação, mostra o botão para avaliar
-                                    <div>
-                                        <p className="text-muted">Serviço concluído. Deixe sua avaliação.</p>
-                                        <button className="btn btn-primary btn-sm" onClick={() => setServicoParaAvaliar(servico.id)}>
-                                            Avaliar Serviço
-                                        </button>
-                        
-                                        {servicoParaAvaliar === servico.id && <FormularioAvaliacao servicoId={servico.id} />}
-                                    </div>
-                                )}
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

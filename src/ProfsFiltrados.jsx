@@ -1,164 +1,152 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 
-
+// Imports dos Slices
 import { selectAllProfissionais, fetchProfissionais } from "./features/buscaSlice";
+import { contratarServico, fetchServicos, selectAllServicos, cancelarServico } from './features/servicosSlice';
 
-
-import { setDataAgendamento } from "./features/profsFiltradosSlice"; 
-
-
-import { 
-    contratarServico, 
-    cancelarServico,
-    fetchServicos,
-    selectAllServicos,
-    resetActionStatus
-} from './features/servicosSlice';
-
-import cx from "classnames";
+// Estilos
 import styles from "./css/style3.module.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const ProfsFiltrados = () => {
-  const [searchParams] = useSearchParams();
-  const tipoSelecionado = searchParams.get("tipo");
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
+    const tipoSelecionado = searchParams.get("tipo");
 
- 
-  const statusBusca = useSelector((state) => state.busca.status);
-  const errorBusca = useSelector((state) => state.busca.error);
-  const profissionais = useSelector(selectAllProfissionais);
-  
-  
-  
-  const { datasAgendamento } = useSelector((state) => state.profissionais);
-  
-  
-  const servicosContratados = useSelector(selectAllServicos);
-  const statusServicos = useSelector(state => state.servicosContratados.status);
-  const { actionStatus } = useSelector(state => state.servicosContratados);
+    const [datasAgendamento, setDatasAgendamento] = useState({});
 
-  
-  
-  
-  useEffect(() => {
-    
-    if (tipoSelecionado) {
-      dispatch(fetchProfissionais(tipoSelecionado));
-    }
-    
-    if (statusServicos === 'idle') {
-        dispatch(fetchServicos());
-    }
-  }, [tipoSelecionado, statusServicos, dispatch]);
+    // --- Seletores do Redux ---
+    const { user } = useSelector(state => state.auth);
+    const statusBusca = useSelector((state) => state.busca.status);
+    const errorBusca = useSelector((state) => state.busca.error);
+    const profissionais = useSelector(selectAllProfissionais);
+    const servicosContratados = useSelector(selectAllServicos);
 
-  const getDataMinima = () => new Date().toISOString().split("T")[0];
-  
+    // Seletor para o status da ação de agendamento
+    const { type, profissionalId: agendandoProfId, status: agendamentoStatus } = useSelector(state => state.servicosContratados.actionStatus);
 
-  if (statusBusca === "loading") return <p className="text-center mt-5">Carregando profissionais...</p>;
-  // Verifique se 'error' existe e então acesse a propriedade 'message'
-if (statusBusca === 'failed') return <p className="text-center mt-5 alert alert-danger">Erro: {error.message || error}</p>;
-
-  if (statusBusca !== "succeeded" || profissionais.length === 0) {
-      return (
-        <div className="text-center mt-5">
-            <h1>Nenhum profissional encontrado</h1>
-            <p>Tente buscar por outro termo.</p>
-            <Link to="/buscar" className="btn btn-primary">Voltar para a Busca</Link>
-        </div>
-      )
-  }
-
-  
-  return (
-    <div className={styles.container2}>
-      <h1 className="mb-4">Profissionais de {tipoSelecionado}</h1>
-      
-      { profissionais.map((prof) => {
-            const agendamentoExistente = servicosContratados.find(s => s.profissionalId === prof.id && s.avaliacao === null);
-            
-            const isContratando = actionStatus.type === 'contratar' && actionStatus.profissionalId === prof.id && actionStatus.status === 'loading';
-            const isCancelando = actionStatus.type === 'cancelar' && actionStatus.servicoId === agendamentoExistente?.id && actionStatus.status === 'loading';
-
-        return (
-          <div key={prof.id} className={`card mb-4 ${styles.profissionalCard}`}>
-            <div className="card-body">
-              <h2 className="card-title">
-                <Link to={`/profissional/${prof.id}`} className={styles.nomeProfissional}>
-                  {prof.nome}
-                </Link>
-              </h2>
-              <p className="card-text text-muted">{prof.descricao}</p>
-              <div className="d-flex justify-content-between mb-2">
-                <strong>Preço: R$ {prof.preco?.toFixed(2)}</strong>
-                <span>Distância: {prof.distancia} km</span>
-              </div>
-              <div className="d-flex align-items-center mb-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <span key={i} className={cx(styles.estrela, { [styles.selecionada]: i <= Math.round(prof.estrelas) })}>★</span>
-                ))}
-                <span className="ms-2">({prof.estrelas?.toFixed(1)})</span>
-              </div>
-
-              
-              <div className="d-flex flex-wrap gap-2 align-items-center mt-3 p-3 border rounded bg-light">
-                {agendamentoExistente ? (
-                  
-                  <>
-                    <div className="flex-grow-1">
-                      <p className="mb-0">
-                        <strong>Agendado para:</strong> {new Date(agendamentoExistente.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
-                      </p>
-                      <small className="text-muted">Para avaliar, acesse seu Histórico.</small>
-                    </div>
-                    <button 
-                    className="btn btn-danger"
-                    onClick={() => dispatch(cancelarServico(agendamentoExistente.id))}
-                    disabled={isCancelando} 
-                      >
-                    {isCancelando ? 'Cancelando...' : 'Cancelar Agendamento'}
-                    </button>
-                  </>
-                ) : (
-                  
-                  <>
-                    <input
-                      type="date"
-                      className="form-control"
-                      style={{width: 'auto'}}
-                      min={getDataMinima()}
-                      value={datasAgendamento[prof.id] || ""}
-                      onChange={(e) => dispatch(setDataAgendamento({ id: prof.id, data: e.target.value }))}
-                    />
-                    <button 
-    className="btn btn-success" 
-    
-    onClick={() => {
-        const dataAgendamento = datasAgendamento[prof.id];
-        if (dataAgendamento) {
-            dispatch(contratarServico({ profissional: prof, dataAgendamento }));
-        } else {
-            alert('Por favor, selecione uma data para o agendamento.');
+    // --- Lógica de busca de dados ---
+    useEffect(() => {
+        if (tipoSelecionado) {
+            dispatch(fetchProfissionais(tipoSelecionado));
         }
-    }}
-  
-    disabled={isContratando} 
->
-    
-    {isContratando ? 'Agendando...' : 'Agendar'}
-                </button>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
+        if (user) {
+            dispatch(fetchServicos());
+        }
+    }, [tipoSelecionado, user, dispatch]);
+
+    const handleDateChange = (profId, data) => {
+        setDatasAgendamento(prevDatas => ({ ...prevDatas, [profId]: data }));
+    };
+
+    const getDataMinima = () => new Date().toISOString().split("T")[0];
+
+    // Otimização para consulta de agendamentos
+    const agendamentosMap = useMemo(() => {
+        const map = new Map();
+        servicosContratados.forEach(servico => {
+            if (!servico.avaliacao) {
+                map.set(servico.profissionalId, servico);
+            }
+        });
+        return map;
+    }, [servicosContratados]);
+
+
+    let content;
+
+    if (statusBusca === 'loading') {
+        content = <p className="text-center mt-5">Carregando profissionais...</p>;
+    }
+    else if (statusBusca === 'failed') {
+        content = <p className="text-center mt-5 alert alert-danger">Erro ao buscar: {errorBusca}</p>;
+    }
+    else if (statusBusca === 'succeeded') {
+        if (profissionais && profissionais.length > 0) {
+            content = profissionais.map((prof) => {
+                if (!prof || !prof.id) return null;
+
+                const agendamentoExistente = agendamentosMap.get(prof.id);
+                const isAgendando = type === 'contratar' && agendamentoStatus === 'loading' && agendandoProfId === prof.id;
+
+                return (
+                    <div key={prof.id} className={`card mb-4 ${styles.profissionalCard}`}>
+                        <div className="card-body">
+                            <h2 className="card-title">
+                                <Link to={`/profissionais/${prof.id}`} className={styles.nomeProfissional}>{prof.nome}</Link>
+                            </h2>
+                            <p className="card-text text-muted">{prof.descricao}</p>
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <span className="text-muted">Distância: {prof.distancia} km</span>
+                                <span className="fs-5 fw-bold text-success">R$ {prof.preco?.toFixed(2).replace('.', ',')}</span>
+                            </div>
+
+                            <div className="d-flex flex-wrap gap-2 align-items-center mt-3 p-3 border rounded bg-light">
+                                {agendamentoExistente ? (
+                                    <div className="flex-grow-1 text-success fw-bold"><i className="bi bi-check-circle-fill me-2"></i>Agendado</div>
+                                ) : (
+                                    <>
+                                        <input
+                                            type="date"
+                                            className="form-control"
+                                            style={{ width: 'auto' }}
+                                            min={getDataMinima()}
+                                            value={datasAgendamento[prof.id] || ""}
+                                            onChange={(e) => handleDateChange(prof.id, e.target.value)}
+                                            disabled={isAgendando}
+                                        />
+                                        <button
+                                            className="btn btn-success"
+                                            disabled={isAgendando}
+                                            onClick={() => {
+                                                const data = datasAgendamento[prof.id];
+                                                if (data && user?.id) {
+                                                    dispatch(contratarServico({
+                                                        profissional: prof,
+                                                        dataAgendamento: data,
+                                                        clienteId: user.id
+                                                    }));
+                                                } else if (!data) {
+                                                    alert('Por favor, selecione uma data.');
+                                                } else {
+                                                    alert('Erro: Usuário não autenticado.');
+                                                }
+                                            }}
+                                        >
+                                            {isAgendando ? 'Agendando...' : 'Agendar'}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            });
+        } else {
+            content = (
+                <div className="text-center mt-5">
+                    <h1>Nenhum profissional encontrado</h1>
+                    <p>Tente buscar por outro termo.</p>
+                    <Link to="/buscar" className="btn btn-primary">Voltar para a Busca</Link>
+                </div>
+            );
+        }
+    }
+
+    return (
+        <div className={styles.container2}>
+            <h1 className="mb-4">Profissionais de {tipoSelecionado}</h1>
+            {type === 'contratar' && agendamentoStatus === 'failed' && (
+                <div className="alert alert-danger">
+                    Ocorreu um erro ao tentar agendar. Tente novamente.
+                </div>
+            )}
+            {content}
+        </div>
+    );
 };
 
 export default ProfsFiltrados;

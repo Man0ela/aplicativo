@@ -1,166 +1,167 @@
-import { createSlice, createAsyncThunk, createEntityAdapter} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, createEntityAdapter } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// 2. createEntityAdapter: Otimiza o armazenamento dos serviços.
-// Em vez de um array, teremos um objeto com 'ids' e 'entities'.
+// O adapter otimiza o armazenamento da lista de serviços
 const servicesAdapter = createEntityAdapter({
-    // Assume que cada serviço tem um campo 'id'
     selectId: (servico) => servico.id,
 });
 
-// 3. createAsyncThunk: Para operações assíncronas (API).
+const initialState = servicesAdapter.getInitialState({
+    status: 'idle', // idle | loading | succeeded | failed
+    error: null,
+    actionStatus: { type: null, servicoId: null, status: 'idle' } 
+});
 
-// Thunk para BUSCAR todos os serviços contratados
+// ================================================================
+// ## THUNKS CORRIGIDAS ##
+// ================================================================
+
+// THUNK PARA BUSCAR O HISTÓRICO DE SERVIÇOS DO CLIENTE LOGADO
 export const fetchServicos = createAsyncThunk(
-    'servicosContratados/fetchServicos',
-    async (_, { rejectWithValue }) => {
+    'servicos/fetchServicos',
+    // O primeiro argumento é _, pois não precisamos passar nada do componente
+    async (_, { getState, rejectWithValue }) => {
         try {
-            const response = await axios.get('http://localhost:3001/servicos');
+            // Pega o usuário logado do estado 'auth'
+            const { user } = getState().auth;
+            if (!user || !user.id) {
+                return rejectWithValue('Usuário não autenticado.');
+            }
+            
+            // CORREÇÃO: Envia o ID do cliente como um parâmetro de busca na URL
+            const response = await axios.get(`http://localhost:3001/servicos?clienteId=${user.id}`);
             return response.data;
+
         } catch (error) {
-            return rejectWithValue(error.response?.data || 'Erro ao buscar serviços');
+            return rejectWithValue(error.response?.data?.message || 'Falha ao buscar histórico.');
         }
     }
 );
 
+// THUNK PARA CONTRATAR UM NOVO SERVIÇO (AGENDAMENTO)
 export const contratarServico = createAsyncThunk(
-    'servicosContratados/contratarServico',
-    async ({ profissional, dataAgendamento }, { rejectWithValue }) => {
-        if (!dataAgendamento) {
-            return rejectWithValue('A data do agendamento é obrigatória.');
-        }
-
-        const novoServico = {
-            nome: profissional.nome,
-            tipo: profissional.tipo,
-            profissionalId: profissional.id,
-            data: dataAgendamento,
-            // Status inicial:
-            avaliacao: null, 
-            avaliacaoGeral: null,
-            icon: 'calendar-check'
-        };
-
+    'servicos/contratarServico',
+    // Recebe { profissional, dataAgendamento } do componente
+    async ({ profissional, dataAgendamento }, { getState, rejectWithValue }) => {
         try {
+            const { user } = getState().auth;
+            if (!user || !user.id) {
+                return rejectWithValue('Faça login para contratar um serviço.');
+            }
+
+            // Monta o objeto com os dados que o back-end espera
+            const novoServico = {
+                nome: profissional.nome,
+                tipo: profissional.tipo,
+                profissionalId: profissional.id,
+                data: dataAgendamento,
+                clienteId: user.id // CORREÇÃO: Inclui o ID do cliente logado
+            };
+
             const response = await axios.post('http://localhost:3001/servicos', novoServico);
             return response.data;
+
         } catch (error) {
-            return rejectWithValue('Não foi possível registrar o serviço.');
+            return rejectWithValue(error.response?.data?.message || 'Falha ao agendar serviço.');
         }
     }
 );
 
-// NOVA THUNK: Atualiza um serviço existente com uma avaliação.
+// THUNK PARA ENVIAR A AVALIAÇÃO DE UM SERVIÇO
 export const enviarAvaliacao = createAsyncThunk(
-    'servicosContratados/enviarAvaliacao',
+    'servicos/enviarAvaliacao',
     async ({ id, avaliacao, nota }, { rejectWithValue }) => {
         try {
-            // PATCH atualiza apenas os campos enviados
             const response = await axios.patch(`http://localhost:3001/servicos/${id}`, {
                 avaliacao: avaliacao,
                 avaliacaoGeral: nota
             });
             return response.data;
         } catch (error) {
-            return rejectWithValue('Falha ao enviar avaliação.');
+            return rejectWithValue(error.response?.data?.message || 'Falha ao enviar avaliação.');
         }
     }
 );
-    export const cancelarServico = createAsyncThunk(
-    'servicosContratados/cancelarServico',
+
+// THUNK PARA CANCELAR UM SERVIÇO
+export const cancelarServico = createAsyncThunk(
+    'servicos/cancelarServico',
     async (servicoId, { rejectWithValue }) => {
         try {
-            // A requisição DELETE não precisa de corpo, apenas da URL com o ID.
             await axios.delete(`http://localhost:3001/servicos/${servicoId}`);
-            // Retorna o ID para que possamos removê-lo do nosso estado.
-            return servicoId;
+            return servicoId; // Retorna o ID para remoção do estado
         } catch (error) {
-            return rejectWithValue('Não foi possível cancelar o serviço.');
+            return rejectWithValue(error.response?.data?.message || 'Falha ao cancelar serviço.');
         }
     }
 );
 
-// O estado inicial agora usa o adapter e controla status da API.
-const initialState = servicesAdapter.getInitialState({
-    status: 'idle', 
-    error: null,
-    avaliacoesVisiveis: {} ,
-    actionStatus: { type: null, servicoId: null, status: 'idle' } 
-});
 
-const servicosContratadosSlice = createSlice({
+// ================================================================
+// ## SLICE ##
+// ================================================================
+
+const servicosSlice = createSlice({
     name: 'servicosContratados',
     initialState,
     reducers: {
-
-        toggleAvaliacaoVisivel: (state, action) => {
-            const id = action.payload;
-            state.avaliacoesVisiveis[id] = !state.avaliacoesVisiveis[id];
-        },
-        clearServicosError: (state) => {
-            state.error = null;
-        },
-         resetActionStatus: (state) => {
+        resetActionStatus: (state) => {
             state.actionStatus = { type: null, servicoId: null, status: 'idle' };
         }
     },
-    // extraReducers lida com as ações das thunks.
     extraReducers: (builder) => {
         builder
             // Casos para fetchServicos
-            .addCase(fetchServicos.pending, (state) => {
-            state.status = 'loading';
-        })
-        .addCase(fetchServicos.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            servicesAdapter.setAll(state, action.payload);
-        })
-        .addCase(fetchServicos.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error = action.payload;
-        })
+            .addCase(fetchServicos.pending, (state) => { state.status = 'loading'; })
+            .addCase(fetchServicos.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                servicesAdapter.setAll(state, action.payload);
+            })
+            .addCase(fetchServicos.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload;
+            })
+            // Casos para contratarServico
             .addCase(contratarServico.pending, (state, action) => {
-            state.actionStatus = { type: 'contratar', profissionalId: action.meta.arg.profissional.id, status: 'loading' };
-        })
-        .addCase(contratarServico.fulfilled, (state, action) => { // <-- Apenas uma vez, com a lógica unificada
-            state.actionStatus = { status: 'succeeded' };
-            servicesAdapter.addOne(state, action.payload);
-        })
-        .addCase(contratarServico.rejected, (state, action) => {
-            state.actionStatus = { status: 'failed' };
-            state.error = action.payload;
-        })
-
-            // Atualiza o serviço que foi avaliado no estado.
+                state.actionStatus = { type: 'contratar', profissionalId: action.meta.arg.profissional.id, status: 'loading' };
+            })
+            .addCase(contratarServico.fulfilled, (state, action) => {
+                state.actionStatus = { status: 'succeeded' };
+                servicesAdapter.addOne(state, action.payload);
+            })
+            .addCase(contratarServico.rejected, (state, action) => {
+                state.actionStatus = { status: 'failed' };
+                state.error = action.payload;
+            })
+            // Caso para enviarAvaliacao
             .addCase(enviarAvaliacao.fulfilled, (state, action) => {
                 servicesAdapter.updateOne(state, {
                     id: action.payload.id,
                     changes: action.payload
                 });
             })
+            // Casos para cancelarServico
             .addCase(cancelarServico.pending, (state, action) => {
-            state.actionStatus = { type: 'cancelar', servicoId: action.meta.arg, status: 'loading' };
-        })
-        .addCase(cancelarServico.fulfilled, (state, action) => { // <-- Apenas uma vez, com a lógica unificada
-            state.actionStatus = { status: 'succeeded' };
-            servicesAdapter.removeOne(state, action.payload);
-        })
-        .addCase(cancelarServico.rejected, (state, action) => {
-            state.actionStatus = { status: 'failed' };
-            state.error = action.payload;
-        })   
-             
+                state.actionStatus = { type: 'cancelar', servicoId: action.meta.arg, status: 'loading' };
+            })
+            .addCase(cancelarServico.fulfilled, (state, action) => {
+                state.actionStatus = { status: 'succeeded' };
+                servicesAdapter.removeOne(state, action.payload);
+            })
+            .addCase(cancelarServico.rejected, (state, action) => {
+                state.actionStatus = { status: 'failed' };
+                state.error = action.payload;
+            });
     }
 });
 
-export const { toggleAvaliacaoVisivel, clearServicosError,  resetActionStatus} = servicosContratadosSlice.actions;
+export const { resetActionStatus } = servicosSlice.actions;
 
-// Exporta os seletores gerados pelo adapter.
+// Exporta os seletores do adapter
 export const {
     selectAll: selectAllServicos,
     selectById: selectServicoById,
-    selectIds: selectServicoIds,
 } = servicesAdapter.getSelectors(state => state.servicosContratados);
 
-
-export default servicosContratadosSlice.reducer;
+export const { toggleAvaliacaoVisivel } = servicosSlice.actions;
+export default servicosSlice.reducer;
