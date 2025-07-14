@@ -1,35 +1,29 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from './css/SobreNos.module.css';
+import React from "react";
+import { useSelector } from "react-redux";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const SobreNos = () => {
-  const navigate = useNavigate();
-  const { titulo, descricao, itens } = useSelector(state => state.sobreNos);
+  // Pega os dados do slice do Redux
+  const { titulo, descricao, itens } = useSelector((state) => state.sobreNos);
 
   return (
-    <div className={`container py-5 ${styles.sobreContainer}`}>
-      <h1 className="mb-4 text-center fw-bold">{titulo}</h1>
-      <p className="lead text-center mb-5">{descricao}</p>
+    <div className="container my-5">
+      <h1 className="mb-4">{titulo}</h1>
+      <p className="lead">{descricao}</p>
 
-      <div className="row gy-4">
-        {(itens || []).map(item => (
-          <div key={item.id} className="col-md-4 text-center">
-            <i className={`bi bi-${item.icon} fs-1 mb-3 ${styles.icon}`} />
-            <h3 className="mb-2">{item.titulo}</h3>
-            <p>{item.texto}</p>
+      <div className="row">
+        {itens.map(({ id, icon, titulo, texto }) => (
+          <div key={id} className="col-md-4 mb-4">
+            <div className="card h-100 shadow-sm">
+              <div className="card-body text-center">
+                <i className={`bi bi-${icon} fs-1 mb-3 text-primary`}></i>
+                <h5 className="card-title">{titulo}</h5>
+                <p className="card-text">{texto}</p>
+              </div>
+            </div>
           </div>
         ))}
-      </div>
-
-      <div className="text-center mt-5">
-        <button
-          className="btn btn-primary btn-lg"
-          onClick={() => navigate('/buscar')}
-        >
-          Encontre um profissional agora
-        </button>
       </div>
     </div>
   );
