@@ -1,17 +1,22 @@
-import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
+// features/authSlice.js
 
-import { registrarNovoUsuario } from './usersSlice';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { registrarNovoUsuario } from './usersSlice';
+
 const initialState = {
     user: null, 
     isAuthenticated: false,
+    status: 'idle',
+    error: null,
 };
+
+// Thunk de Login (o seu código já estava bom, apenas para referência)
 export const loginUser = createAsyncThunk(
     'auth/login',
     async (loginData, { rejectWithValue }) => {
         try {
             const response = await axios.post('/api/auth/login', loginData);
-            // Salva o token no localStorage para manter a sessão
             localStorage.setItem('token', response.data.token);
             return response.data; // Retorna { token, user }
         } catch (error) {
@@ -19,37 +24,82 @@ export const loginUser = createAsyncThunk(
         }
     }
 );
+
+// NOVA THUNK: Carrega o usuário a partir do token no localStorage
+export const loadUserFromToken = createAsyncThunk(
+  'auth/loadUser',
+  async (_, { rejectWithValue }) => {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      return rejectWithValue('Nenhum token encontrado.');
+    }
+
+    try {
+      // Configura o cabeçalho de autorização para a requisição
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      
+      
+      const response = await axios.get('/api/auth/me', config);
+      return { user: response.data }; // Retorna o objeto do usuário
+    } catch (error) {
+      
+      localStorage.removeItem('token');
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
+    
     reducers: {
-        
+        logout: (state) => {
+            localStorage.removeItem('token');
+            state.user = null;
+            state.isAuthenticated = false;
+        }
     },
-    //  este bloco de extraReducers
     extraReducers: (builder) => {
         builder
             .addCase(registrarNovoUsuario.fulfilled, (state, action) => {
-                // QUANDO a thunk 'registrarNovoUsuario' for completada com SUCESSO...
-                
-                // pegamos os dados do novo usuário que vieram do back-end (o action.payload)...
                 state.user = action.payload;
-                // e o definimos como o usuário autenticado na sessão.
                 state.isAuthenticated = true;
             })
+           
             .addCase(loginUser.pending, (state) => {
-                state.status = 'loading'; // Você pode adicionar status ao authSlice se quiser
+                state.status = 'loading';
                 state.error = null;
             })
             .addCase(loginUser.fulfilled, (state, action) => {
+                state.status = 'succeeded';
                 state.isAuthenticated = true;
-                state.user = action.payload.user; // Salva os dados do usuário
+                state.user = action.payload.user;
             })
             .addCase(loginUser.rejected, (state, action) => {
+                state.status = 'failed';
+                state.isAuthenticated = false;
+                state.user = null;
                 state.error = action.payload;
             })
+            
+            .addCase(loadUserFromToken.fulfilled, (state, action) => {
+                state.isAuthenticated = true;
+                state.user = action.payload.user;
+                state.status = 'succeeded';
+            })
+            .addCase(loadUserFromToken.rejected, (state) => {
+                state.isAuthenticated = false;
+                state.user = null;
+                state.status = 'idle';
+            });
     }
 });
 
 export const { logout } = authSlice.actions;
-
 export default authSlice.reducer;

@@ -1,20 +1,46 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+
+// Thunk para buscar os dados do dashboard do profissional
+export const fetchServicosDoProfissional = createAsyncThunk(
+  'dashboard/fetchServicos',
+  async (profissionalId, { rejectWithValue }) => {
+    try {
+      // Chama a nova rota que criamos no backend
+      const response = await axios.get(`/api/servicos/profissional/${profissionalId}`);
+      return response.data; // Deve retornar { historico: [...], solicitacoes: [...] }
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Falha ao carregar dados do dashboard.');
+    }
+  }
+);
 
 const initialState = {
-  historicoServicos: [
-    { id: 1, cliente: 'Maria', data: '2025-05-01', avaliacao: 5, descricao: 'Limpeza geral' },
-    { id: 2, cliente: 'João', data: '2025-05-03', avaliacao: 4, descricao: 'Jardinagem' },
-  ],
-  solicitacoesServicos: [
-    { id: 3, cliente: 'Ana', data: '2025-06-05', descricao: 'Conserto elétrico' }
-  ],
+  historicoServicos: [],    // Começa vazio
+  solicitacoesServicos: [], // Começa vazio
+  status: 'idle', // idle | loading | succeeded | failed
+  error: null,
 };
 
 const dashboardProfissionalSlice = createSlice({
   name: 'dashboardProfissional',
   initialState,
-  reducers: {
-
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchServicosDoProfissional.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchServicosDoProfissional.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Preenche os arrays com os dados vindos da API
+        state.historicoServicos = action.payload.historico;
+        state.solicitacoesServicos = action.payload.solicitacoes;
+      })
+      .addCase(fetchServicosDoProfissional.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      });
   },
 });
 

@@ -19,11 +19,13 @@ function Login() {
       console.log('DADOS RECEBIDOS DO BACK-END:', userData);
 
       // Redireciona conforme o tipo retornado pelo backend
-      if (userData.user.tipo === "cliente") {
-        navigate("/inicial");
-      } else if (userData.user.tipo === "profissional") {
-        navigate("/dashboard-profissional");
-      }
+      // Verificamos se o objeto do usuário retornado pela API
+// possui a propriedade 'valorPorHora'. Se sim, ele é um profissional.
+if (userData.user.role === "profissional") {
+    navigate("/dashboard-profissional");
+} else {
+    navigate("/inicial"); 
+}
     } catch (err) {
       alert(`Falha no login: ${err}`);
     }
