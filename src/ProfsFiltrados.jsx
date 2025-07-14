@@ -76,12 +76,12 @@ const ProfsFiltrados = () => {
                     <div key={prof.id} className={`card mb-4 ${styles.profissionalCard}`}>
                         <div className="card-body">
                             <h2 className="card-title">
-                                <Link to={`/profissionais/${prof.id}`} className={styles.nomeProfissional}>{prof.nome}</Link>
+                                <span to={`/profissionais/${prof.id}`} className={styles.nomeProfissional}>{prof.nome}</span>
                             </h2>
                             <p className="card-text text-muted">{prof.descricao}</p>
                             <div className="d-flex justify-content-between align-items-center mb-3">
-                                <span className="text-muted">Distância: {prof.distancia} km</span>
-                                <span className="fs-5 fw-bold text-success">R$ {prof.preco?.toFixed(2).replace('.', ',')}</span>
+                                <span className="text-muted">Distância: {prof.distanciaMaxima} km</span>
+                                <span className="fs-5 fw-bold text-success">R$ {prof.valorPorHora?.toFixed(2).replace('.', ',')}</span>
                             </div>
 
                             <div className="d-flex flex-wrap gap-2 align-items-center mt-3 p-3 border rounded bg-light">

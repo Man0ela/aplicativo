@@ -7,7 +7,6 @@ import Cadastro from "./Cadastro";
 import TelaInicial from "./TelaInicial";
 import TelaBusca from "./TelaBusca";
 import ProfsFiltrados from "./ProfsFiltrados";
-import ProfissionalDetalhes from "./ProfissionalDetalhes";
 import ServicosContratados from "./ServicosContratados";
 import SobreNos from "./SobreNos";
 import DashboardProfissional from "./DashboardProfissional";
@@ -29,7 +28,6 @@ function App() {
         <Route path="/inicial" element={<TelaInicial />} />
         <Route path="/buscar" element={<TelaBusca />} />
         <Route path="/profs-filtrados" element={<ProfsFiltrados />} />
-        <Route path="/profissional/:id" element={<ProfissionalDetalhes />} />
         <Route path="/historico" element={<ServicosContratados />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
         <Route path="/dashboard-profissional" element={<DashboardProfissional />} />

@@ -18,7 +18,7 @@ export const fetchProfissionais = createAsyncThunk(
         }
 
         // <-- CORREÇÃO 1: A porta foi alterada de 3001 para 3000
-        const url = `http://localhost:3001/profissionais?tipo_like=${encodeURIComponent(tipoServico)}`;
+        const url = `/api/profissionais?tipo_like=${encodeURIComponent(tipoServico)}`;
         
         try {
             const response = await axios.get(url);

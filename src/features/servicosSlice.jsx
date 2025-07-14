@@ -29,7 +29,7 @@ export const fetchServicos = createAsyncThunk(
             }
             
             // CORREÇÃO: Envia o ID do cliente como um parâmetro de busca na URL
-            const response = await axios.get(`http://localhost:3001/servicos?clienteId=${user.id}`);
+            const response = await axios.get(`/api/servicos?clienteId=${user.id}`);
             return response.data;
 
         } catch (error) {
@@ -58,7 +58,7 @@ export const contratarServico = createAsyncThunk(
                 clienteId: user.id // CORREÇÃO: Inclui o ID do cliente logado
             };
 
-            const response = await axios.post('http://localhost:3001/servicos', novoServico);
+            const response = await axios.post('/api/servicos', novoServico);
             return response.data;
 
         } catch (error) {
@@ -72,7 +72,7 @@ export const enviarAvaliacao = createAsyncThunk(
     'servicos/enviarAvaliacao',
     async ({ id, avaliacao, nota }, { rejectWithValue }) => {
         try {
-            const response = await axios.patch(`http://localhost:3001/servicos/${id}`, {
+            const response = await axios.patch(`/api/servicos/${id}`, {
                 avaliacao: avaliacao,
                 avaliacaoGeral: nota
             });
@@ -88,7 +88,7 @@ export const cancelarServico = createAsyncThunk(
     'servicos/cancelarServico',
     async (servicoId, { rejectWithValue }) => {
         try {
-            await axios.delete(`http://localhost:3001/servicos/${servicoId}`);
+            await axios.delete(`/api/servicos/${servicoId}`);
             return servicoId; // Retorna o ID para remoção do estado
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Falha ao cancelar serviço.');

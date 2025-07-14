@@ -12,7 +12,7 @@ export const registrarNovoUsuario = createAsyncThunk(
             // Prepara o endpoint e o payload corretos dependendo do tipo de usuário
             if (tipoUsuario === 'profissional') {
                
-                endpoint = 'http://localhost:3001/profissionais';
+                endpoint = '/api/profissionais';
                 
                 // Mapeia os nomes dos campos do formulário para os nomes do seu Model no back-end
                 payload = {
@@ -21,13 +21,13 @@ export const registrarNovoUsuario = createAsyncThunk(
                     senha: dados.senha,
                     tipo: dados.especialidade,
                     descricao: dados.descricaoServico,
-                    preco: dados.preco,
-                    distancia: dados.distanciaAtendimento,
+                    valorPorHora: dados.preco,                 // << ALTERE AQUI
+                    distanciaMaxima: dados.distanciaAtendimento, // << E AQUI
                     estrelas: 5
                 };
             } else {
          
-                endpoint = 'http://localhost:3001/clientes';
+                endpoint = '/api/clientes';
                 payload = {
                     nome: dados.nome,
                     email: dados.email,

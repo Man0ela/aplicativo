@@ -10,7 +10,7 @@ export const loginUser = createAsyncThunk(
     'auth/login',
     async (loginData, { rejectWithValue }) => {
         try {
-            const response = await axios.post('http://localhost:3001/auth/login', loginData);
+            const response = await axios.post('/api/auth/login', loginData);
             // Salva o token no localStorage para manter a sessão
             localStorage.setItem('token', response.data.token);
             return response.data; // Retorna { token, user }

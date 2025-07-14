@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import buscaReducer from './features/buscaSlice.jsx';
 import telainicialReducer from './features/telainicialSlice';
 import profissionaisReducer from './features/profsFiltradosSlice';
-import profdetalhesReducer from './features/profDetalhesSlice';
 import footerReducer from "./features/footerSlice.jsx";
 import headerReducer from "./features/headerSlice.jsx";
 import SobreNosReducer from './features/sobrenosSlice.jsx';
@@ -16,7 +15,6 @@ export const store = configureStore({
     busca: buscaReducer,
     telaInicial: telainicialReducer, 
     profissionais: profissionaisReducer,
-    profdetalhes: profdetalhesReducer,
     footer: footerReducer,
     header: headerReducer,
     sobreNos: SobreNosReducer,
