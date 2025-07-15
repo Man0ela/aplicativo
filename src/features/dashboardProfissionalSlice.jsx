@@ -16,8 +16,8 @@ export const fetchServicosDoProfissional = createAsyncThunk(
 );
 
 const initialState = {
-  historicoServicos: [],    // Começa vazio
-  solicitacoesServicos: [], // Começa vazio
+  historicoServicos: [],    
+  solicitacoesServicos: [], 
   status: 'idle', // idle | loading | succeeded | failed
   error: null,
 };

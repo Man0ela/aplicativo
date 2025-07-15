@@ -28,7 +28,7 @@ const ProfsFiltrados = () => {
 
   // --- Seletores do Redux ---
   const { user } = useSelector((state) => state.auth);
-  console.log("user do Redux:", user); // 👈 Console log adicionado aqui
+  console.log("user do Redux:", user); 
   const statusBusca = useSelector((state) => state.busca.status);
   const errorBusca = useSelector((state) => state.busca.error);
   const profissionais = useSelector(selectAllProfissionais);

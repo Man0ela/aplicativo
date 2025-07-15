@@ -21,8 +21,8 @@ export const registrarNovoUsuario = createAsyncThunk(
                     senha: dados.senha,
                     tipo: dados.especialidade,
                     descricao: dados.descricaoServico,
-                    valorPorHora: dados.preco,                 // << ALTERE AQUI
-                    distanciaMaxima: dados.distanciaAtendimento, // << E AQUI
+                    valorPorHora: dados.preco,                 
+                    distanciaMaxima: dados.distanciaAtendimento, 
                     estrelas: 5
                 };
             } else {

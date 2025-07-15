@@ -17,7 +17,7 @@ const Contato = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aqui você pode adicionar lógica para enviar o formulário, ex: API
+    
     setEnviado(true);
   };
 

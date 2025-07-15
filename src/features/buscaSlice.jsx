@@ -54,10 +54,7 @@ const buscaSlice = createSlice({
             })
             .addCase(fetchProfissionais.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                // <-- CORREÇÃO 2: Agora, um array vazio vindo do back-end
-                // será um resultado 'fulfilled', e o adapter vai simplesmente
-                // guardar um estado vazio, permitindo que o componente
-                // mostre a mensagem "Nenhum profissional encontrado".
+                
                 professionalsAdapter.setAll(state, action.payload);
             })
             .addCase(fetchProfissionais.rejected, (state, action) => {

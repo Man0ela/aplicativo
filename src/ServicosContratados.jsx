@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-// A importação de 'react-redux' está correta aqui
+
 import { useSelector, useDispatch } from 'react-redux'; 
 import { 
     selectAllServicos,
     fetchServicos,
     enviarAvaliacao,
-    cancelarServico // 1. Importamos a ação de cancelar que já existe no seu slice
+    cancelarServico 
 } from './features/servicosSlice';
 
-// --- Componente do Formulário de Avaliação (com correção) ---
-// 2. Adicionamos a prop 'onAvaliacaoEnviada'
+
 const FormularioAvaliacao = ({ servicoId, onAvaliacaoEnviada }) => {
     const dispatch = useDispatch();
     const [nota, setNota] = useState(5);
@@ -19,7 +18,7 @@ const FormularioAvaliacao = ({ servicoId, onAvaliacaoEnviada }) => {
         e.preventDefault();
         dispatch(enviarAvaliacao({ id: servicoId, avaliacao: comentario, nota: Number(nota) }));
         
-        // 3. AVISO: Após enviar, chamamos a função para notificar o componente pai
+        
         onAvaliacaoEnviada(); 
     };
 
@@ -39,7 +38,7 @@ const FormularioAvaliacao = ({ servicoId, onAvaliacaoEnviada }) => {
 };
 
 
-// --- Componente Principal do Histórico (com correções) ---
+
 const ServicosContratados = () => {
     const dispatch = useDispatch();
     
@@ -90,7 +89,7 @@ const ServicosContratados = () => {
                                             // Se NÃO EXISTE avaliação, mostra as opções de ação
                                             <div>
                                                 {servicoParaAvaliar === servico.id ? (
-                                                    // 4. Passamos a função para o formulário
+                                                    
                                                     <FormularioAvaliacao 
                                                         servicoId={servico.id} 
                                                         onAvaliacaoEnviada={() => setServicoParaAvaliar(null)}

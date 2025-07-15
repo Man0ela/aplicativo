@@ -12,14 +12,12 @@ const initialState = servicesAdapter.getInitialState({
     actionStatus: { type: null, servicoId: null, status: 'idle' } 
 });
 
-// ================================================================
-// ## THUNKS CORRIGIDAS ##
-// ================================================================
+
 
 // THUNK PARA BUSCAR O HISTÓRICO DE SERVIÇOS DO CLIENTE LOGADO
 export const fetchServicos = createAsyncThunk(
     'servicos/fetchServicos',
-    // O primeiro argumento é _, pois não precisamos passar nada do componente
+
     async (_, { getState, rejectWithValue }) => {
         try {
             // Pega o usuário logado do estado 'auth'
@@ -28,7 +26,7 @@ export const fetchServicos = createAsyncThunk(
                 return rejectWithValue('Usuário não autenticado.');
             }
             
-            // CORREÇÃO: Envia o ID do cliente como um parâmetro de busca na URL
+            
             const response = await axios.get(`/api/servicos?clienteId=${user.id}`);
             return response.data;
 
@@ -55,7 +53,7 @@ export const contratarServico = createAsyncThunk(
                 tipo: profissional.tipo,
                 profissionalId: profissional.id,
                 data: dataAgendamento,
-                clienteId: user.id // CORREÇÃO: Inclui o ID do cliente logado
+                clienteId: user.id 
             };
 
             const response = await axios.post('/api/servicos', novoServico);
@@ -97,9 +95,7 @@ export const cancelarServico = createAsyncThunk(
 );
 
 
-// ================================================================
-// ## SLICE ##
-// ================================================================
+
 
 const servicosSlice = createSlice({
     name: 'servicosContratados',
